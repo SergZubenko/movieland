@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by sergz on 24.10.2017.
  */
-@Repository
+@Repository(value = "JdbcGenreDao")
 public class JdbcGenreDao implements GenreDao{
 
     @Autowired

@@ -1,5 +1,7 @@
 package com.sergzubenko.data.repository;
 
+import com.sergzubenko.data.utils.Sorted;
+
 import java.util.List;
 
 /**
@@ -12,7 +14,11 @@ public class Movie {
    Integer yearOfRelease;
    String description;
    String picturePath;
+
+   @Sorted(columnName = "rating")
    Double rating;
+
+   @Sorted
    Double price;
 
    List<Country> countries;

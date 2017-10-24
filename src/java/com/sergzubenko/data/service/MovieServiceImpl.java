@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sergz on 24.10.2017.
@@ -35,5 +36,10 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public List<Movie> getByGenre(Integer genreId) {
         return movieDao.getByGenre(genreId);
+    }
+
+    @Override
+    public List<Movie> getAllMovies(Map<String, String> params) {
+        return movieDao.getAllMovies(params);
     }
 }

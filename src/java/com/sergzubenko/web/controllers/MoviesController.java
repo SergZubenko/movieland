@@ -4,12 +4,11 @@ import com.sergzubenko.data.repository.Movie;
 import com.sergzubenko.data.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sergz on 24.10.2017.
@@ -21,10 +20,9 @@ public class MoviesController {
     @Autowired
     MovieService movieService;
 
-
     @RequestMapping(path = "")
-    public List<Movie> getAllMovies(){
-        return  movieService.getAllMovies();
+    public List<Movie> getAllMovies( @RequestParam(required = false) LinkedHashMap<String, String> params ){
+        return  movieService.getAllMovies(params);
     }
 
     @RequestMapping(path = "/random")
@@ -36,6 +34,8 @@ public class MoviesController {
     public List<Movie> getByGenre(@PathVariable Integer genreId){
         return  movieService.getByGenre(genreId);
     }
+
+
 
 
 }

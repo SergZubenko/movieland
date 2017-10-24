@@ -16,7 +16,11 @@
 </div>
 
 <div>
-    <a href="/v1/movie/genre/7"> by genre "комедия"(7)</a> <br/>
+    <a href="/v1/movie/genre/7"> by genre "comedy"(7)</a> <br/>
+</div>
+
+<div>
+    <a href="/v1/movie?rating=asc&price=desc"> rating=asc&price=desc</a>
 </div>
 
 

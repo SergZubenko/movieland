@@ -3,6 +3,7 @@ package com.sergzubenko.data.service;
 import com.sergzubenko.data.dao.GenreDao;
 import com.sergzubenko.data.repository.Genre;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,7 +15,8 @@ import java.util.List;
 public class GenreServiceImpl implements GenreService{
 
     @Autowired
-    GenreDao genreDao;
+    @Qualifier("cached")
+    private GenreDao genreDao;
 
     @Override
     public List<Genre> getGenres() {

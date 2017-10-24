@@ -1,5 +1,6 @@
 package com.sergzubenko.data.config;
 
+import com.sergzubenko.data.utils.SortedColumnMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
@@ -41,6 +42,12 @@ public class ApplicationConfig extends AnnotationConfigApplicationContext {
     public NamedParameterJdbcTemplate namedJdbcTemplate(){
         NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource());
         return jdbcTemplate;
+    }
+
+
+    @Bean
+    public SortedColumnMapper sortedColumnMapper(){
+        return new SortedColumnMapper();
     }
 
 }
