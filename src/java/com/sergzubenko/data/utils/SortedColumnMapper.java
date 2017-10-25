@@ -18,7 +18,7 @@ public class SortedColumnMapper {
                     columnName = declaredField.getName();
                 }
                 if (columnName.equals(param)) {
-                    return columnName;
+                    return declaredField.getName();
                 }
             }
         }
