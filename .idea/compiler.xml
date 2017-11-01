@@ -6,11 +6,24 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="movieland" />
+        <module name="movieland-domain" />
+        <module name="movieland-persistence-api" />
+        <module name="movieland-persistence-jdbc" />
+        <module name="movieland-service-api" />
+        <module name="movieland-service-impl" />
+        <module name="movieland-utils" />
+        <module name="movieland-web" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="movieland" target="1.8" />
+      <module name="movieland-domain" target="1.8" />
+      <module name="movieland-persistence-api" target="1.8" />
+      <module name="movieland-persistence-jdbc" target="1.8" />
+      <module name="movieland-service-api" target="1.8" />
+      <module name="movieland-service-impl" target="1.8" />
+      <module name="movieland-utils" target="1.8" />
+      <module name="movieland-web" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
