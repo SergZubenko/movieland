@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = WebAppConfig.class)
 @WebAppConfiguration
-public class MovieJsonTest{
+public class IMoviesControllerTest {
 
     @Autowired
     private WebApplicationContext context;
