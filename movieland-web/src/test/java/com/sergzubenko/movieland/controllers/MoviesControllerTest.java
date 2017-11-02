@@ -4,6 +4,7 @@ import com.sergzubenko.movieland.config.WebAppConfig;
 import com.sergzubenko.movieland.entity.Country;
 import com.sergzubenko.movieland.entity.Genre;
 import com.sergzubenko.movieland.entity.Movie;
+import com.sergzubenko.movieland.serialize.JSONConverter;
 import com.sergzubenko.movieland.service.api.MovieService;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +12,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -43,6 +46,11 @@ public class MoviesControllerTest {
     @Mock
     private MovieService movieService;
 
+    @Spy
+    JSONConverter jsonConverter = new JSONConverter();
+
+    private String exColumnsAllMovies = "countries,genres,description";
+
     @InjectMocks
     private MoviesController moviesController;
 
@@ -53,6 +61,8 @@ public class MoviesControllerTest {
                 .standaloneSetup(moviesController)
                 .build();
 
+        org.springframework.test.util.ReflectionTestUtils.setField(
+                moviesController, "exColumnsAllMovies", exColumnsAllMovies);
     }
 
     private void initMock() {
@@ -76,12 +86,10 @@ public class MoviesControllerTest {
 
         movies.add(movie);
 
-
         when(movieService.getAllMovies(any())).thenReturn(movies);
         when(movieService.getRandomMovies()).thenReturn(movies);
         when(movieService.getByGenre(any())).thenReturn(movies);
     }
-
 
     @Test
     public void getAllMovies() throws Exception {
