@@ -21,7 +21,7 @@ public class MoviesController {
 
     @RequestMapping(method = RequestMethod.GET)
     public List<MovieCompactDto>  getAllMovies(@RequestParam(required = false) LinkedHashMap<String, String> params) {
-        return MovieDtoMapper.mapToDTOCompact(movieService.getAllMovies(params));
+        return MovieDtoMapper.mapToDTOCompact(movieService.getMovies(params));
     }
 
     @RequestMapping(path = "/random",method = RequestMethod.GET)
@@ -30,8 +30,8 @@ public class MoviesController {
     }
 
     @RequestMapping(path = "/genre/{genreId}",method = RequestMethod.GET)
-    public List<MovieCompactDto> getByGenre(@PathVariable Integer genreId, @RequestParam(required = false) LinkedHashMap<String, String> params) {
-        return MovieDtoMapper.mapToDTOCompact(movieService.getByGenre(genreId, params));
+    public List<MovieCompactDto> getMoviesByGenre(@PathVariable Integer genreId, @RequestParam(required = false) LinkedHashMap<String, String> params) {
+        return MovieDtoMapper.mapToDTOCompact(movieService.getMoviesByGenre(genreId, params));
     }
 
 }

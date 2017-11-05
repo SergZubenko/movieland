@@ -27,14 +27,16 @@ public class JdbcMovieDaoITest {
         for (int i = 0; i < movies.size() && i < 10; i++) {
             movie = movies.get(i);
             assertNotNull(movie.getId());
+            assertNotNull(movie.getYearOfRelease());
             assertNotNull(movie.getNameNative());
+            assertNotNull(movie.getNameRussian());
             assertNotNull(movie.getDescription());
         }
     }
 
     @Test
     public void getAllMovies() throws Exception {
-        List<Movie> movies = jdbcMovieDao.getAllMovies();
+        List<Movie> movies = jdbcMovieDao.getMovies(null);
         checkListNotNull(movies);
     }
 
@@ -46,13 +48,13 @@ public class JdbcMovieDaoITest {
 
     @Test
     public void getByGenre() throws Exception {
-        List<Movie> movies = jdbcMovieDao.getByGenre(1, null);
+        List<Movie> movies = jdbcMovieDao.getMoviesByGenre(1, null);
         checkListNotNull(movies);
     }
 
     @Test
     public void getByMissingGenre() throws Exception {
-        List<Movie> movies = jdbcMovieDao.getByGenre(-1, null);
+        List<Movie> movies = jdbcMovieDao.getMoviesByGenre(-1, null);
         assertEquals(0, movies.size());
     }
 

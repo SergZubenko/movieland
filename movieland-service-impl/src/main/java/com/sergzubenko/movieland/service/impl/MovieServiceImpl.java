@@ -14,23 +14,18 @@ public class MovieServiceImpl implements MovieService {
     @Autowired
     private MovieDao movieDao;
 
-   @Override
-    public List<Movie> getAllMovies() {
-        return movieDao.getAllMovies();
-    }
-
     @Override
     public List<Movie> getRandomMovies() {
         return movieDao.getRandomMovies();
     }
 
     @Override
-    public List<Movie> getByGenre(Integer genreId, Map<String,String> params) {
-        return movieDao.getByGenre(genreId, params);
+    public List<Movie> getMoviesByGenre(Integer genreId, Map<String,String> params) {
+        return movieDao.getMoviesByGenre(genreId, params);
     }
 
     @Override
-    public List<Movie> getAllMovies(Map<String, String> params) {
-        return movieDao.getAllMovies(params);
+    public List<Movie> getMovies(Map<String, String> params) {
+        return movieDao.getMovies(params);
     }
 }

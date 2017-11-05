@@ -74,9 +74,9 @@ public class MoviesControllerTest {
 
         movies.add(movie);
 
-        when(movieService.getAllMovies(any())).thenReturn(movies);
+        when(movieService.getMovies(any())).thenReturn(movies);
         when(movieService.getRandomMovies()).thenReturn(movies);
-        when(movieService.getByGenre(any(), any())).thenReturn(movies);
+        when(movieService.getMoviesByGenre(any(), any())).thenReturn(movies);
     }
 
     @Test

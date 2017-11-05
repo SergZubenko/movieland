@@ -38,7 +38,7 @@ public class JdbcGenreDao implements GenreDao {
         return movies.stream().filter(m -> m.getId().equals(id)).findFirst().orElse(null);
     }
 
-    void enrichMovies(List<Movie> movies, Set<Integer> ids) {
+    void enrichMovies(List<Movie> movies, List<Integer> ids) {
         Map<String, ?> idsMap = Collections.singletonMap("ids", ids);
         namedParameterJdbcTemplate.query(getMoviesGenresSQL, idsMap, (rs) -> {
             Movie movie = findMovieInList(rs.getInt("movie_id"), movies);

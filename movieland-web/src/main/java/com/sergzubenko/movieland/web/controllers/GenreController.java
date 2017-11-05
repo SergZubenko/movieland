@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 @Controller
-@RequestMapping("/genre")
+@RequestMapping(path="/genre", produces = "application/json; charset=utf-8")
 public class GenreController {
 
     @Autowired
@@ -19,7 +19,7 @@ public class GenreController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public List<Genre> getAll() {
+    public List<Genre> getGenres() {
         return genreService.getGenres();
     }
 

@@ -45,7 +45,7 @@ public class JdbcCountryDao implements CountryDao {
         throw new RuntimeException("No movie found with ID "+id);
     }
 
-    void enrichMovies(List<Movie> movies, Set<Integer> ids) {
+    void enrichMovies(List<Movie> movies, List<Integer> ids) {
         Map<String, ?> idsMap = Collections.singletonMap("ids", ids);
         namedParameterJdbcTemplate.query(getMoviesCountriesSQL, idsMap, (rs) -> {
             Movie movie = findMovieInList(rs.getInt("movie_id"), movies);

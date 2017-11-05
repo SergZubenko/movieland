@@ -9,20 +9,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Repository
 public class JdbcMovieDao implements MovieDao {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
     private MovieMapper movieMapper = new MovieMapper();
 
     private OrderByAppender orderByAppender = new OrderByAppender();
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private JdbcCountryDao countryDao;
@@ -30,12 +27,11 @@ public class JdbcMovieDao implements MovieDao {
     @Autowired
     private JdbcGenreDao genreDao;
 
-
     @Value("${sql.movie.movieByID}")
     private String movieByIdSQL;
 
     @Value("${sql.movie.allMovies}")
-    private String getAllMoviesSQL;
+    private String getMoviesSQL;
 
     @Value("${sql.movie.randomThreeMovies}")
     private String getRandomThreeMoviesSQL;
@@ -52,18 +48,13 @@ public class JdbcMovieDao implements MovieDao {
     }
 
     @Override
-    public List<Movie> getAllMovies() {
-        return getAllMovies(null);
-    }
-
-    @Override
-    public List<Movie> getAllMovies(Map<String, String> params) {
-        String sql = orderByAppender.prepareOrderedQuery(getAllMoviesSQL, orderBySQL, Movie.class, params);
+    public List<Movie> getMovies(Map<String, String> params) {
+        String sql = orderByAppender.prepareOrderedQuery(getMoviesSQL, orderBySQL, Movie.class, params);
         return jdbcTemplate.query(sql, movieMapper);
     }
 
     @Override
-    public List<Movie> getByGenre(Integer genreId, Map<String, String> params) {
+    public List<Movie> getMoviesByGenre(Integer genreId, Map<String, String> params) {
         String sql = orderByAppender.prepareOrderedQuery(getMoviesByGenreSQL,  orderBySQL, Movie.class, params);
         return jdbcTemplate.query(sql, new Object[]{genreId}, movieMapper);
     }
@@ -72,19 +63,16 @@ public class JdbcMovieDao implements MovieDao {
         if (movies.size() == 0) {
             return movies;
         }
-        Set<Integer> ids = extractIdsFromList(movies);
+        List<Integer> ids = extractIdsFromList(movies);
         countryDao.enrichMovies(movies, ids);
         genreDao.enrichMovies(movies, ids);
         return movies;
     }
 
-    private Set<Integer> extractIdsFromList(List<Movie> movies) {
-        Set<Integer> ids = new HashSet<>();
-        for (Movie movie : movies) {
-            ids.add(movie.getId());
-        }
+    //to avoid extra loop in each enrichment
+    private List<Integer> extractIdsFromList(List<Movie> movies) {
+        List<Integer> ids = new ArrayList<>(movies.size());
+        movies.forEach(movie -> ids.add(movie.getId()));
         return ids;
     }
-
-
 }
