@@ -13,9 +13,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import javax.sql.DataSource;
 
 @Configuration
-@ComponentScan(basePackages = "com.sergzubenko.movieland.persistence")
-@PropertySource({
-        "classpath:jdbc.properties",
+@ComponentScan(basePackages = "com.sergzubenko.movieland.persistence.jdbc")
+@PropertySource({"classpath:jdbc.properties",
         "classpath:scheduler.properties",
         "classpath:mysql.sql.template.properties"})
 @EnableScheduling
