@@ -5,6 +5,11 @@ public class Genre {
     private final Integer id;
     private final String name;
 
+    public Genre(Integer id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -13,15 +18,9 @@ public class Genre {
         return name;
     }
 
-
-    public Genre(Integer id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
     @Override
     public String toString() {
-        return "entitity.Genre{" +
+        return "entity.Genre{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';

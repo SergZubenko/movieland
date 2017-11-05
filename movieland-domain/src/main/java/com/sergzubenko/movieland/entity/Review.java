@@ -32,7 +32,7 @@ public class Review {
 
     @Override
     public String toString() {
-        return "entitity.Review{" +
+        return "entity.Review{" +
                 "id=" + id +
                 ", user=" + user +
                 ", review='" + review + '\'' +

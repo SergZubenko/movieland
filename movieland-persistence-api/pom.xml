@@ -10,16 +10,14 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <properties>
-        <springVersion>4.3.10.RELEASE</springVersion>
-    </properties>
-
     <artifactId>movieland-persistence-api</artifactId>
+
     <dependencies>
+        <!--INTERNAL MODULES-->
         <dependency>
             <groupId>movieland</groupId>
             <artifactId>movieland-domain</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${global.version}</version>
         </dependency>
     </dependencies>
 

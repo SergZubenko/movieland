@@ -12,77 +12,54 @@
 
     <artifactId>movieland-persistence-jdbc</artifactId>
 
-    <properties>
-        <springVersion>4.3.10.RELEASE</springVersion>
-    </properties>
-
     <dependencies>
-
+        <!--INTERNAL MODULES-->
         <dependency>
             <groupId>movieland</groupId>
             <artifactId>movieland-persistence-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${global.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>${springVersion}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>${springVersion}</version>
-        </dependency>
-
         <dependency>
             <groupId>movieland</groupId>
             <artifactId>movieland-domain</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${global.version}</version>
         </dependency>
 
+        <!--SPRING-->
         <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.10.19</version>
-            <scope>test</scope>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
         </dependency>
-
         <dependency>
-            <groupId>movieland</groupId>
-            <artifactId>movieland-utils</artifactId>
-            <version>0.0.1-SHAPSHOT</version>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
         </dependency>
 
+        <!--JDBC-->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
         </dependency>
 
+        <!--TEST-->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>${springVersion}</version>
+            <scope>test</scope>
         </dependency>
-
     </dependencies>
-
-
-    <build>
-
-        <testResources>
-            <testResource>
-                <directory>${project.basedir}/src/test/resources</directory>
-            </testResource>
-        </testResources>
-    </build>
 </project>

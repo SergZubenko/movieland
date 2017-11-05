@@ -2,12 +2,27 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
+
+    <packaging>pom</packaging>
 
     <groupId>movieland</groupId>
     <artifactId>movieland</artifactId>
-    <packaging>pom</packaging>
     <version>0.0.1-SNAPSHOT</version>
+
+    <properties>
+        <global.version>0.0.1-SNAPSHOT</global.version>
+        <spring.version>5.0.0.RELEASE</spring.version>
+        <mysql.version>5.1.6</mysql.version>
+        <apache.commons.version>2.1.1</apache.commons.version>
+        <mockito.version>1.10.19</mockito.version>
+        <junit.version>4.12</junit.version>
+        <jayway.jsonpath.version>2.2.0</jayway.jsonpath.version>
+        <jackson.version>2.9.2</jackson.version>
+        <javax.version>3.1.0</javax.version>
+    </properties>
+
     <modules>
         <module>movieland-domain</module>
         <module>movieland-persistence-jdbc</module>
@@ -15,20 +30,81 @@
         <module>movieland-service-impl</module>
         <module>movieland-web</module>
         <module>movieland-persistence-api</module>
-        <module>movieland-utils</module>
     </modules>
 
-    <properties>
-        <springVersion>4.3.10.RELEASE</springVersion>
-    </properties>
+    <dependencyManagement>
+        <dependencies>
+            <!--SPRING -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-jdbc</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${springVersion}</version>
-        </dependency>
-    </dependencies>
+            <!--jdbc-->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-dbcp2</artifactId>
+                <version>${apache.commons.version}</version>
+            </dependency>
+
+            <!--CONVERTER-->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <!--WEB-->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${javax.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!--TEST-->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>${spring.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.jayway.jsonpath</groupId>
+                <artifactId>json-path</artifactId>
+                <version>${jayway.jsonpath.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>${mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>
@@ -50,7 +126,6 @@
                     <preparationGoals>clean install</preparationGoals>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
 </project>
