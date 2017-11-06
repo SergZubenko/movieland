@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="log_file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>c:/logs/movieland.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>/logs/movieland-%d{yyyy-MM-dd}.log.%i</FileNamePattern>
+            <MaxFileSize>5MB</MaxFileSize>
+        </rollingPolicy>
+        <encoder>
+            <Pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</Pattern>
+        </encoder>
+    </appender>
+
+    <root>
+        <appender-ref ref="log_file" level="DEBUG" />
+    </root>
+</configuration>

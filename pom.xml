@@ -21,6 +21,7 @@
         <jayway.jsonpath.version>2.2.0</jayway.jsonpath.version>
         <jackson.version>2.9.2</jackson.version>
         <javax.version>3.1.0</javax.version>
+        <logback.version>1.2.3</logback.version>
     </properties>
 
     <modules>
@@ -76,6 +77,13 @@
                 <artifactId>javax.servlet-api</artifactId>
                 <version>${javax.version}</version>
                 <scope>provided</scope>
+            </dependency>
+
+            <!--LOGGING-->
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
             </dependency>
 
             <!--TEST-->

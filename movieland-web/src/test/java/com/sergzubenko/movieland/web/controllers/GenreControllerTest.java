@@ -10,16 +10,16 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 import static org.mockito.Mockito.when;
@@ -50,11 +50,13 @@ public class GenreControllerTest {
 
     @Test
     public void getAllServices() throws Exception {
+        Logger log = LoggerFactory.getLogger(getClass());
+        log.debug("get genres");
+
         when(genreService.getGenres()).thenReturn(Collections.singletonList(new Genre(111, "test genre")));
         mvc.perform(
                 get("/genre")
                         .accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$[0].id").value(111))

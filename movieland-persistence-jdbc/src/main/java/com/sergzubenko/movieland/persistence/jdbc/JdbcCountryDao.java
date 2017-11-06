@@ -14,6 +14,8 @@ import java.util.*;
 
 @Service
 public class JdbcCountryDao implements CountryDao {
+    private CountryMapper countryMapper = new CountryMapper();
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -33,8 +35,6 @@ public class JdbcCountryDao implements CountryDao {
     public List<Country> getCountries() {
         return jdbcTemplate.query(getAllCountiesSQL, countryMapper);
     }
-
-    private CountryMapper countryMapper = new CountryMapper();
 
     private Movie findMovieInList(Integer id, List<Movie> movies) {
         for (Movie movie : movies) {

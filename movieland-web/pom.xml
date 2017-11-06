@@ -41,6 +41,12 @@
             <artifactId>spring-webmvc</artifactId>
         </dependency>
 
+        <!--LOGGING-->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+
         <!--TEST-->
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>

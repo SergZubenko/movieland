@@ -15,6 +15,8 @@ import java.util.*;
 @Service
 public class JdbcGenreDao implements GenreDao {
 
+    private GenreMapper genreMapper = new GenreMapper();
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -26,8 +28,6 @@ public class JdbcGenreDao implements GenreDao {
 
     @Value("${sql.movie.moviesGenres}")
     String getMoviesGenresSQL;
-
-    private GenreMapper genreMapper = new GenreMapper();
 
     @Override
     public List<Genre> getGenres() {
