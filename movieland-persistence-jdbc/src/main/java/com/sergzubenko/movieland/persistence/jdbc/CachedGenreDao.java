@@ -16,7 +16,7 @@ public class CachedGenreDao {
 
     private List<Genre> cache;
 
-    private ReentrantReadWriteLock cacheLock;
+    private final ReentrantReadWriteLock cacheLock;
 
     @Autowired
     private GenreDao genreDao;

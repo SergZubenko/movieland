@@ -14,7 +14,7 @@ import java.util.*;
 
 @Service
 public class JdbcCountryDao implements CountryDao {
-    private CountryMapper countryMapper = new CountryMapper();
+    private final CountryMapper countryMapper = new CountryMapper();
 
     @Autowired
     private JdbcTemplate jdbcTemplate;

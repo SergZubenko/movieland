@@ -15,7 +15,7 @@ import java.util.*;
 @Service
 public class JdbcGenreDao implements GenreDao {
 
-    private GenreMapper genreMapper = new GenreMapper();
+    private final GenreMapper genreMapper = new GenreMapper();
 
     @Autowired
     private JdbcTemplate jdbcTemplate;

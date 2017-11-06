@@ -14,9 +14,9 @@ import java.util.*;
 @Repository
 public class JdbcMovieDao implements MovieDao {
 
-    private MovieMapper movieMapper = new MovieMapper();
+    private final MovieMapper movieMapper = new MovieMapper();
 
-    private OrderByAppender orderByAppender = new OrderByAppender();
+    private final OrderByAppender orderByAppender = new OrderByAppender();
 
     @Autowired
     private JdbcTemplate jdbcTemplate;

@@ -9,7 +9,7 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 public class OrderByAppenderTest {
-    private OrderByAppender orderByBuilder = new OrderByAppender();
+    private final OrderByAppender orderByBuilder = new OrderByAppender();
 
     @Test
     public void getColumnName() throws Exception {
@@ -22,7 +22,7 @@ public class OrderByAppenderTest {
         assertEquals("price", orderByBuilder.getColumnName(TestSorted.class, "no_price"));
     }
 
-    static class TestSorted {
+    private static class TestSorted {
         @Sorted("extraprice")
         double price;
         @Sorted
