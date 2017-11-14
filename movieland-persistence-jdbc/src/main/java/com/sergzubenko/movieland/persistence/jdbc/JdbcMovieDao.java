@@ -3,76 +3,58 @@ package com.sergzubenko.movieland.persistence.jdbc;
 import com.sergzubenko.movieland.entity.Movie;
 import com.sergzubenko.movieland.persistance.api.MovieDao;
 import com.sergzubenko.movieland.persistence.jdbc.mapper.MovieMapper;
-import com.sergzubenko.movieland.persistence.jdbc.util.OrderByAppender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+
+import static com.sergzubenko.movieland.persistence.jdbc.util.OrderByAppender.prepareOrderedQuery;
 
 @Repository
 public class JdbcMovieDao implements MovieDao {
 
-    private final MovieMapper movieMapper = new MovieMapper();
-
-    private final OrderByAppender orderByAppender = new OrderByAppender();
+    private static final MovieMapper movieMapper = new MovieMapper();
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    private JdbcCountryDao countryDao;
-
-    @Autowired
-    private JdbcGenreDao genreDao;
-
     @Value("${sql.movie.movieByID}")
-    private String movieByIdSQL;
+    private String movieByIdSql;
 
     @Value("${sql.movie.allMovies}")
-    private String getMoviesSQL;
+    private String getMoviesSql;
 
     @Value("${sql.movie.randomThreeMovies}")
-    private String getRandomThreeMoviesSQL;
+    private String getRandomThreeMoviesSql;
 
     @Value("${sql.movie.moviesByGenre}")
-    private String getMoviesByGenreSQL;
+    private String getMoviesByGenreSql;
 
     @Value("${sql.common.orderBy}")
-    private String orderBySQL;
+    private String orderBySql;
 
     @Override
     public List<Movie> getRandomMovies() {
-        return fillSubEntities(jdbcTemplate.query(getRandomThreeMoviesSQL, movieMapper));
+        return jdbcTemplate.query(getRandomThreeMoviesSql, movieMapper);
     }
 
     @Override
     public List<Movie> getMovies(Map<String, String> params) {
-        String sql = orderByAppender.prepareOrderedQuery(getMoviesSQL, orderBySQL, Movie.class, params);
+        String sql = prepareOrderedQuery(getMoviesSql, orderBySql, Movie.class, params);
         return jdbcTemplate.query(sql, movieMapper);
     }
 
     @Override
+    public Movie getMovieById(Integer id) {
+        return  jdbcTemplate.queryForObject(movieByIdSql, new Object[]{id}, movieMapper);
+    }
+
+    @Override
     public List<Movie> getMoviesByGenre(Integer genreId, Map<String, String> params) {
-        String sql = orderByAppender.prepareOrderedQuery(getMoviesByGenreSQL,  orderBySQL, Movie.class, params);
+        String sql = prepareOrderedQuery(getMoviesByGenreSql, orderBySql, Movie.class, params);
         return jdbcTemplate.query(sql, new Object[]{genreId}, movieMapper);
-    }
-
-    private List<Movie> fillSubEntities(List<Movie> movies) {
-        if (movies.size() == 0) {
-            return movies;
-        }
-        List<Integer> ids = extractIdsFromList(movies);
-        countryDao.enrichMovies(movies, ids);
-        genreDao.enrichMovies(movies, ids);
-        return movies;
-    }
-
-    //to avoid extra loop in each enrichment
-    private List<Integer> extractIdsFromList(List<Movie> movies) {
-        List<Integer> ids = new ArrayList<>(movies.size());
-        movies.forEach(movie -> ids.add(movie.getId()));
-        return ids;
     }
 }

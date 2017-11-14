@@ -3,13 +3,20 @@ package com.sergzubenko.movieland.persistence.jdbc.util;
 import java.security.InvalidParameterException;
 
 public enum SortOrder {
-    ASC, DESC;
+    ASC("ASC"), DESC("DESC");
 
-    public static SortOrder getByName(String name){
-        if ("asc".equals(String.valueOf(name).toLowerCase())) {
-            return ASC;
-        }else if ("desc".equals(String.valueOf(name).toLowerCase())){
-            return DESC;
-        }else throw new InvalidParameterException("invalid param "+ name);
+    private final String value;
+
+    SortOrder(String value) {
+        this.value = value;
+    }
+
+    public static SortOrder getByName(String name) {
+        for (SortOrder sortOrder : values()) {
+            if (sortOrder.value.equalsIgnoreCase(name)) {
+                return sortOrder;
+            }
+        }
+        throw new InvalidParameterException("Sort order value not found. Value: "+ name);
     }
 }

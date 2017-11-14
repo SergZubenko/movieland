@@ -8,14 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-@Service
+import static com.sergzubenko.movieland.persistence.jdbc.util.MovieListUtils.findInListById;
+import static com.sergzubenko.movieland.persistence.jdbc.util.MovieListUtils.getIds;
+
+@Repository
 public class JdbcGenreDao implements GenreDao {
 
-    private final GenreMapper genreMapper = new GenreMapper();
+    private static final GenreMapper genreMapper = new GenreMapper();
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -24,31 +29,31 @@ public class JdbcGenreDao implements GenreDao {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Value("${sql.genre.allGenres}")
-    private String getAllGenresSQL;
+    private String getAllGenresSql;
 
     @Value("${sql.movie.moviesGenres}")
-    String getMoviesGenresSQL;
+    String getMoviesGenresSql;
 
     @Override
-    public List<Genre> getGenres() {
-        return jdbcTemplate.query(getAllGenresSQL, genreMapper);
+    public List<Genre> getAll() {
+        return jdbcTemplate.query(getAllGenresSql, genreMapper);
     }
 
-    private Movie findMovieInList(Integer id, List<Movie> movies) {
-        return movies.stream().filter(m -> m.getId().equals(id)).findFirst().orElse(null);
-    }
-
-    void enrichMovies(List<Movie> movies, List<Integer> ids) {
-        Map<String, ?> idsMap = Collections.singletonMap("ids", ids);
-        namedParameterJdbcTemplate.query(getMoviesGenresSQL, idsMap, (rs) -> {
-            Movie movie = findMovieInList(rs.getInt("movie_id"), movies);
-            List<Genre> genres = movie.getGenres();
-            if (genres == null){
-                genres = new ArrayList<>();
-                movie.setGenres(genres);
+    @Override
+    public void enrichMovies(List<Movie> movies) {
+        namedParameterJdbcTemplate.query(getMoviesGenresSql, getIds(movies), rs -> {
+            Movie movie = findInListById(rs.getInt("movie_id"), movies);
+            List<Genre> subCollection = movie.getGenres();
+            if (subCollection == null) {
+                subCollection = new ArrayList<>();
+                movie.setGenres(subCollection);
             }
-            genres.add(genreMapper.mapRow(rs,0));
-
+            subCollection.add(genreMapper.mapRow(rs, 0));
         });
+    }
+
+    @Override
+    public void enrichMovie(Movie movie) {
+        enrichMovies(Collections.singletonList(movie));
     }
 }

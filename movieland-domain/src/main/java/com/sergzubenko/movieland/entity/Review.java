@@ -3,8 +3,12 @@ package com.sergzubenko.movieland.entity;
 public class Review {
 
     private Integer id;
+
     private User user;
-    private String review;
+
+    private String text;
+
+    private Movie movie;
 
     public Integer getId() {
         return id;
@@ -22,12 +26,20 @@ public class Review {
         this.user = user;
     }
 
-    public String getReview() {
-        return review;
+    public String getText() {
+        return text;
     }
 
-    public void setReview(String review) {
-        this.review = review;
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public Movie getMovie() {
+        return movie;
+    }
+
+    public void setMovie(Movie movie) {
+        this.movie = movie;
     }
 
     @Override
@@ -35,7 +47,7 @@ public class Review {
         return "entity.Review{" +
                 "id=" + id +
                 ", user=" + user +
-                ", review='" + review + '\'' +
+                ", text='" + text + '\'' +
                 '}';
     }
 }

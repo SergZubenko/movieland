@@ -12,4 +12,6 @@ public interface MovieDao {
     List<Movie> getMoviesByGenre(Integer genreId, Map<String, String> params);
 
     List<Movie> getMovies(Map<String, String> params);
+
+    Movie getMovieById(Integer id);
 }

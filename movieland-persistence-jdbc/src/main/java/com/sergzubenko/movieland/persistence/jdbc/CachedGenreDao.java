@@ -1,50 +1,44 @@
 package com.sergzubenko.movieland.persistence.jdbc;
 
 import com.sergzubenko.movieland.entity.Genre;
+import com.sergzubenko.movieland.entity.Movie;
 import com.sergzubenko.movieland.persistance.api.GenreDao;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 @Service
-public class CachedGenreDao {
+@Primary
+public class CachedGenreDao implements GenreDao {
 
-    private List<Genre> cache;
+    private volatile List<Genre> cache;
 
-    private final ReentrantReadWriteLock cacheLock;
-
-    @Autowired
+    @Resource(name = "jdbcGenreDao")
     private GenreDao genreDao;
 
-    public CachedGenreDao() {
-        cacheLock = new ReentrantReadWriteLock(true);
+    @Override
+    public void enrichMovies(List<Movie> movies) {
+        genreDao.enrichMovies(movies);
+    }
+
+    @Override
+    public void enrichMovie(Movie movie) {
+        genreDao.enrichMovie(movie);
+    }
+
+    @Override
+    public List<Genre> getAll() {
+        return new ArrayList<>(cache);
     }
 
     @PostConstruct
     @Scheduled(fixedDelayString = "${dao.genre.cacheUpdateInterval}", initialDelayString = "${dao.genre.cacheUpdateInterval}")
     private void updateCache() {
-        List<Genre> updatedCache = genreDao.getGenres();
-        cacheLock.writeLock().lock();
-        try {
-            cache = updatedCache;
-        } finally {
-            cacheLock.writeLock().unlock();
-        }
-    }
-
-    public List<Genre> getGenres() {
-        List<Genre> copyCache;
-        try {
-            cacheLock.readLock().lock();
-            copyCache = new ArrayList<>(cache);
-        } finally {
-            cacheLock.readLock().unlock();
-        }
-        return copyCache;
+        cache = genreDao.getAll();
     }
 }

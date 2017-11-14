@@ -9,17 +9,16 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 public class OrderByAppenderTest {
-    private final OrderByAppender orderByBuilder = new OrderByAppender();
 
     @Test
     public void getColumnName() throws Exception {
-        assertEquals("price", orderByBuilder.getColumnName(TestSorted.class, "price"));
-        assertEquals("rating", orderByBuilder.getColumnName(TestSorted.class, "rating"));
+        assertEquals("price", OrderByAppender.getColumnName(TestSorted.class, "price"));
+        assertEquals("rating", OrderByAppender.getColumnName(TestSorted.class, "rating"));
     }
 
     @Test(expected = NoSuchFieldError.class)
     public void getColumnNameError() throws Exception {
-        assertEquals("price", orderByBuilder.getColumnName(TestSorted.class, "no_price"));
+        assertEquals("price", OrderByAppender.getColumnName(TestSorted.class, "no_price"));
     }
 
     private static class TestSorted {
@@ -27,6 +26,9 @@ public class OrderByAppenderTest {
         double price;
         @Sorted
         double rating;
+
+        @Sorted("sdfsdfs")
+        double someId;
     }
 
 
@@ -37,7 +39,7 @@ public class OrderByAppenderTest {
         params.put("rating", "desc");
 
         assertEquals(" order by price ASC, rating DESC",
-                orderByBuilder.prepareOrderedQuery("", "order by", TestSorted.class, params));
+                OrderByAppender.prepareOrderedQuery("", "order by", TestSorted.class, params));
 
     }
 

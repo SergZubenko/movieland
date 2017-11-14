@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <appender name="log_file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender nickname="log_file" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>/logs/movieland.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <FileNamePattern>/logs/movieland-%d{yyyy-MM-dd}.log.%i</FileNamePattern>

@@ -1,4 +1,4 @@
-package com.sergzubenko.movieland.web.controllers;
+package com.sergzubenko.movieland.web.controller;
 
 import com.sergzubenko.movieland.entity.Genre;
 import com.sergzubenko.movieland.service.api.GenreService;
@@ -49,11 +49,11 @@ public class GenreControllerTest {
     }
 
     @Test
-    public void getAllServices() throws Exception {
+    public void getAll() throws Exception {
         Logger log = LoggerFactory.getLogger(getClass());
         log.debug("get genres");
 
-        when(genreService.getGenres()).thenReturn(Collections.singletonList(new Genre(111, "test genre")));
+        when(genreService.getAll()).thenReturn(Collections.singletonList(new Genre(111, "test genre")));
         mvc.perform(
                 get("/genre")
                         .accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
