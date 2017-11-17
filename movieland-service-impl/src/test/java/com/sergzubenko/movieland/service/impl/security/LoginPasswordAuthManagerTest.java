@@ -3,7 +3,7 @@ package com.sergzubenko.movieland.service.impl.security;
 import com.sergzubenko.movieland.entity.User;
 import com.sergzubenko.movieland.entity.UserRole;
 import com.sergzubenko.movieland.service.api.UserService;
-import com.sergzubenko.movieland.service.api.security.ILoginPasswordPrincipal;
+import com.sergzubenko.movieland.service.api.security.LoginPasswordPrincipal;
 import com.sergzubenko.movieland.service.impl.config.ServiceConfig;
 import com.sergzubenko.movieland.service.impl.security.exception.InvalidUserPasswordException;
 import com.sergzubenko.movieland.service.impl.security.exception.UserNotFoundException;
@@ -53,7 +53,7 @@ public class LoginPasswordAuthManagerTest {
 
     @Test
     public void auth() throws Exception {
-        ILoginPasswordPrincipal principal = new UserPrincipal("login", "password");
+        LoginPasswordPrincipal principal = new UserPrincipal("login", "password");
         manager.auth(principal);
         assertEquals("login", principal.getName());
         assertEquals("password", principal.getPassword());
@@ -65,13 +65,13 @@ public class LoginPasswordAuthManagerTest {
 
     @Test(expected = UserNotFoundException.class)
     public void authNoUser() throws Exception {
-        ILoginPasswordPrincipal principal = new UserPrincipal("nologin", "password");
+        LoginPasswordPrincipal principal = new UserPrincipal("nologin", "password");
         manager.auth(principal);
     }
 
     @Test(expected = InvalidUserPasswordException.class)
     public void authNoPass() throws Exception {
-        ILoginPasswordPrincipal principal = new UserPrincipal("login", "wrong password");
+        LoginPasswordPrincipal principal = new UserPrincipal("login", "wrong password");
         manager.auth(principal);
     }
 }

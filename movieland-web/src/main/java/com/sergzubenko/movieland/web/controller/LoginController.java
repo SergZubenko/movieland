@@ -27,13 +27,14 @@ public class LoginController {
     @Autowired
     private LoginService loginService;
 
-    @RequestMapping(path = "/login" ,method = RequestMethod.POST)
+    @RequestMapping(path = "/login", method = RequestMethod.POST)
     public ResponseEntity<?> login(@RequestBody String json) {
         ObjectMapper mapper = new ObjectMapper();
 
         Map<String, String> request;
         try {
-            request = mapper.readValue(json, new TypeReference<Map<String, String>>() {});
+            request = mapper.readValue(json, new TypeReference<Map<String, String>>() {
+            });
         } catch (IOException e) {
             logger.error("Can't parse input params");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -50,7 +51,7 @@ public class LoginController {
         try {
             responseJson = mapper.writeValueAsString(response);
         } catch (JsonProcessingException e) {
-            logger.error("Error while creating response",e);
+            logger.error("Error while creating response", e);
             throw new RuntimeException(e);
         }
 
@@ -58,7 +59,7 @@ public class LoginController {
     }
 
 
-    @RequestMapping(path = "/logout" ,method = RequestMethod.DELETE)
+    @RequestMapping(path = "/logout", method = RequestMethod.DELETE)
     public ResponseEntity<?> logout(@RequestHeader String uuid) {
         loginService.logout(uuid);
         return new ResponseEntity<>(HttpStatus.OK);

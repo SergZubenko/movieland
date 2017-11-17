@@ -2,11 +2,11 @@ package com.sergzubenko.movieland.service.impl.security;
 
 import com.sergzubenko.movieland.entity.User;
 import com.sergzubenko.movieland.entity.UserRole;
-import com.sergzubenko.movieland.service.api.security.ILoginPasswordPrincipal;
+import com.sergzubenko.movieland.service.api.security.LoginPasswordPrincipal;
 
 import java.util.Set;
 
-public class UserPrincipal implements ILoginPasswordPrincipal {
+public class UserPrincipal implements LoginPasswordPrincipal {
 
     private User user;
 

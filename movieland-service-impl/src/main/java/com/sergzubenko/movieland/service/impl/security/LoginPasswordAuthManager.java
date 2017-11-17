@@ -2,8 +2,8 @@ package com.sergzubenko.movieland.service.impl.security;
 
 import com.sergzubenko.movieland.entity.User;
 import com.sergzubenko.movieland.service.api.UserService;
-import com.sergzubenko.movieland.service.api.security.IAuthManager;
-import com.sergzubenko.movieland.service.api.security.ILoginPasswordPrincipal;
+import com.sergzubenko.movieland.service.api.security.AuthManager;
+import com.sergzubenko.movieland.service.api.security.LoginPasswordPrincipal;
 import com.sergzubenko.movieland.service.impl.security.exception.InvalidUserPasswordException;
 import com.sergzubenko.movieland.service.impl.security.exception.UserNotFoundException;
 import org.slf4j.Logger;
@@ -15,7 +15,7 @@ import java.security.InvalidParameterException;
 import java.security.Principal;
 
 @Service
-class LoginPasswordAuthManager implements IAuthManager {
+class LoginPasswordAuthManager implements AuthManager {
 
     @Autowired
     private UserService userService;
@@ -25,10 +25,10 @@ class LoginPasswordAuthManager implements IAuthManager {
     @Override
     public void auth(Principal principal) {
 
-        if (!(principal instanceof ILoginPasswordPrincipal)) {
+        if (!(principal instanceof LoginPasswordPrincipal)) {
             throw new InvalidParameterException("Current principal does not implement ILoginPasswordPrincipal");
         }
-        ILoginPasswordPrincipal lpPrincipal = (ILoginPasswordPrincipal) principal;
+        LoginPasswordPrincipal lpPrincipal = (LoginPasswordPrincipal) principal;
 
         User user = userService.getUserByEmail(principal.getName());
         if (user == null) {
@@ -44,7 +44,7 @@ class LoginPasswordAuthManager implements IAuthManager {
         }
     }
 
-    private void authorize(User user, ILoginPasswordPrincipal principal) {
+    private void authorize(User user, LoginPasswordPrincipal principal) {
         principal.setUser(user);
         principal.setAuthorities(userService.getRoles(user));
     }

@@ -7,4 +7,6 @@ public interface LoginService {
     AccessToken login(Principal principal);
 
     void logout(String token);
+
+    AccessToken getValidToken(String tokenID);
 }

@@ -2,6 +2,6 @@ package com.sergzubenko.movieland.service.api.security;
 
 import java.security.Principal;
 
-public interface IAuthManager {
+public interface AuthManager {
     void auth(Principal principal);
 }
