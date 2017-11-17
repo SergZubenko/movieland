@@ -26,7 +26,7 @@ public class CountryController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public List<Country> getGenres() {
+    public List<Country> getCountries() {
         return countryService.getAll();
     }
 
