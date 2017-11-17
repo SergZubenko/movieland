@@ -12,6 +12,8 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
         <global.version>0.0.1-SNAPSHOT</global.version>
         <spring.version>5.0.0.RELEASE</spring.version>
         <mysql.version>5.1.6</mysql.version>
@@ -79,6 +81,12 @@
                 <scope>provided</scope>
             </dependency>
 
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15on</artifactId>
+                <version>1.58</version>
+            </dependency>
+            
             <!--LOGGING-->
             <dependency>
                 <groupId>ch.qos.logback</groupId>
@@ -111,6 +119,7 @@
                 <version>${junit.version}</version>
                 <scope>test</scope>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -132,6 +141,14 @@
                 <configuration>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <preparationGoals>clean install</preparationGoals>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
         </plugins>

@@ -23,7 +23,7 @@ public class MovieRandomViewDto {
         return id;
     }
 
-    void setId(Integer id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -31,7 +31,7 @@ public class MovieRandomViewDto {
         return picturePath;
     }
 
-    void setPicturePath(String picturePath) {
+    public void setPicturePath(String picturePath) {
         this.picturePath = picturePath;
     }
 
@@ -39,7 +39,7 @@ public class MovieRandomViewDto {
         return nameRussian;
     }
 
-    void setNameRussian(String nameRussian) {
+    public void setNameRussian(String nameRussian) {
         this.nameRussian = nameRussian;
     }
 
@@ -47,7 +47,7 @@ public class MovieRandomViewDto {
         return nameNative;
     }
 
-    void setNameNative(String nameNative) {
+    public void setNameNative(String nameNative) {
         this.nameNative = nameNative;
     }
 
@@ -55,7 +55,7 @@ public class MovieRandomViewDto {
         return yearOfRelease;
     }
 
-    void setYearOfRelease(Integer yearOfRelease) {
+    public void setYearOfRelease(Integer yearOfRelease) {
         this.yearOfRelease = yearOfRelease;
     }
 
@@ -63,7 +63,7 @@ public class MovieRandomViewDto {
         return description;
     }
 
-    void setDescription(String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
@@ -71,7 +71,7 @@ public class MovieRandomViewDto {
         return rating;
     }
 
-    void setRating(Double rating) {
+    public void setRating(Double rating) {
         this.rating = rating;
     }
 
@@ -79,7 +79,7 @@ public class MovieRandomViewDto {
         return price;
     }
 
-    void setPrice(Double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
@@ -87,7 +87,7 @@ public class MovieRandomViewDto {
         return countries;
     }
 
-    void setCountries(List<Country> countries) {
+    public void setCountries(List<Country> countries) {
         this.countries = countries;
     }
 
@@ -95,8 +95,23 @@ public class MovieRandomViewDto {
         return genres;
     }
 
-    void setGenres(List<Genre> genres) {
+    public void setGenres(List<Genre> genres) {
         this.genres = genres;
     }
 
+    @Override
+    public String toString() {
+        return "MovieRandomViewDto{" +
+                "id=" + id +
+                ", nameRussian='" + nameRussian + '\'' +
+                ", nameNative='" + nameNative + '\'' +
+                ", yearOfRelease=" + yearOfRelease +
+                ", description='" + description + '\'' +
+                ", picturePath='" + picturePath + '\'' +
+                ", rating=" + rating +
+                ", price=" + price +
+                ", countries=" + countries +
+                ", genres=" + genres +
+                '}';
+    }
 }

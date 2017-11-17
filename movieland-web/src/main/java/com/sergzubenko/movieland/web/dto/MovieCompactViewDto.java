@@ -14,7 +14,7 @@ public class MovieCompactViewDto {
         return id;
     }
 
-    void setId(Integer id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -22,7 +22,7 @@ public class MovieCompactViewDto {
         return picturePath;
     }
 
-    void setPicturePath(String picturePath) {
+    public void setPicturePath(String picturePath) {
         this.picturePath = picturePath;
     }
 
@@ -30,7 +30,7 @@ public class MovieCompactViewDto {
         return nameRussian;
     }
 
-    void setNameRussian(String nameRussian) {
+    public void setNameRussian(String nameRussian) {
         this.nameRussian = nameRussian;
     }
 
@@ -38,7 +38,7 @@ public class MovieCompactViewDto {
         return nameNative;
     }
 
-    void setNameNative(String nameNative) {
+    public void setNameNative(String nameNative) {
         this.nameNative = nameNative;
     }
 
@@ -46,7 +46,7 @@ public class MovieCompactViewDto {
         return yearOfRelease;
     }
 
-    void setYearOfRelease(Integer yearOfRelease) {
+    public void setYearOfRelease(Integer yearOfRelease) {
         this.yearOfRelease = yearOfRelease;
     }
 
@@ -54,7 +54,7 @@ public class MovieCompactViewDto {
         return rating;
     }
 
-    void setRating(Double rating) {
+    public void setRating(Double rating) {
         this.rating = rating;
     }
 
@@ -62,9 +62,21 @@ public class MovieCompactViewDto {
         return price;
     }
 
-    void setPrice(Double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
+    @Override
+    public String toString() {
+        return "MovieCompactViewDto{" +
+                "id=" + id +
+                ", nameRussian='" + nameRussian + '\'' +
+                ", nameNative='" + nameNative + '\'' +
+                ", yearOfRelease=" + yearOfRelease +
+                ", picturePath='" + picturePath + '\'' +
+                ", rating=" + rating +
+                ", price=" + price +
+                '}';
+    }
 }
 

@@ -24,7 +24,6 @@
             <artifactId>movieland-domain</artifactId>
             <version>${global.version}</version>
         </dependency>
-
         <!--SPRING-->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -61,5 +60,6 @@
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 </project>

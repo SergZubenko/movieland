@@ -16,6 +16,7 @@ public class Movie {
 
     private List<Country> countries;
     private List<Genre> genres;
+    private List<Review> reviews;
 
     public Integer getId() {
         return id;
@@ -97,9 +98,17 @@ public class Movie {
         this.genres = genres;
     }
 
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
+
     @Override
     public String toString() {
-        return "entity.Movie{" +
+        return "Movie{" +
                 "id=" + id +
                 ", nameRussian='" + nameRussian + '\'' +
                 ", nameNative='" + nameNative + '\'' +
@@ -110,6 +119,7 @@ public class Movie {
                 ", price=" + price +
                 ", countries=" + countries +
                 ", genres=" + genres +
+                ", reviews=" + reviews +
                 '}';
     }
 }

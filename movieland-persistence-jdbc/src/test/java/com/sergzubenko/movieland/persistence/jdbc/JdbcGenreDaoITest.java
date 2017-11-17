@@ -23,10 +23,11 @@ public class JdbcGenreDaoITest {
 
     @Test
     public void getAllGenres() {
-
-        List<Genre> genres = jdbcGenreDao.getGenres();
-        assertNotNull(genres.get(0).getId());
-        assertNotNull(genres.get(0).getName());
+        List<Genre> genres = jdbcGenreDao.getAll();
+        for (Genre genre : genres) {
+            assertNotNull(genre.getId());
+            assertNotNull(genre.getName());
+        }
     }
 
 }

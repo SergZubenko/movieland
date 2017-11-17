@@ -1,9 +1,10 @@
-package com.sergzubenko.movieland.web.controllers;
+package com.sergzubenko.movieland.web.controller;
 
 import com.sergzubenko.movieland.entity.Genre;
 import com.sergzubenko.movieland.service.api.GenreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 @Controller
+@CrossOrigin
 @RequestMapping(path="/genre", produces = "application/json; charset=utf-8")
 public class GenreController {
 
@@ -20,7 +22,7 @@ public class GenreController {
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public List<Genre> getGenres() {
-        return genreService.getGenres();
+        return genreService.getAll();
     }
 
 }

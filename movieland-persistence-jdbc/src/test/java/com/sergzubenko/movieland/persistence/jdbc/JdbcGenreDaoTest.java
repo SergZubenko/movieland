@@ -39,7 +39,7 @@ public class JdbcGenreDaoTest {
 
     @Test
     public void getGenres() throws Exception {
-        List<Genre> genres = jdbcGenreDao.getGenres();
+        List<Genre> genres = jdbcGenreDao.getAll();
         System.out.println(genres);
         assertEquals(genres.get(0).getId().intValue(), 10);
         assertEquals(genres.get(0).getName(), "test genre");

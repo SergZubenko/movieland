@@ -11,5 +11,9 @@ public interface MovieService {
 
     List<Movie> getMoviesByGenre(Integer genreId, Map<String, String> params);
 
-    List<Movie> getMovies(Map<String, String> params);
+    List<Movie> getAll(Map<String, String> params);
+
+    Movie getById(Integer id, String currency);
+
+    Movie getById(Integer id);
 }

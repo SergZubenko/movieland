@@ -1,4 +1,4 @@
-package com.sergzubenko.movieland.web.controllers;
+package com.sergzubenko.movieland.web.controller;
 
 import com.sergzubenko.movieland.entity.Country;
 import com.sergzubenko.movieland.entity.Genre;
@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {WebAppConfig.class, ServiceConfig.class})
 @WebAppConfiguration
 @DirtiesContext
-public class MoviesControllerTest {
+public class MovieControllerTest {
 
     private MockMvc mvc;
 
@@ -41,7 +41,7 @@ public class MoviesControllerTest {
     private MovieService movieService;
 
     @InjectMocks
-    private MoviesController moviesController;
+    private MovieController moviesController;
 
     @Before
     public void setup() {
@@ -49,6 +49,7 @@ public class MoviesControllerTest {
         mvc = MockMvcBuilders
                 .standaloneSetup(moviesController)
                 .build();
+        initMock();
     }
 
     private void initMock() {
@@ -62,6 +63,7 @@ public class MoviesControllerTest {
         movie.setNameNative("test name native");
         movie.setNameRussian("test russian name");
         movie.setPicturePath("hhtp://index.img");
+
         List<Country> countries = new ArrayList<>();
         countries.add(new Country(13, "Zimbabve"));
         countries.add(new Country(14, "Uganda"));
@@ -74,14 +76,15 @@ public class MoviesControllerTest {
 
         movies.add(movie);
 
-        when(movieService.getMovies(any())).thenReturn(movies);
+        when(movieService.getAll(any())).thenReturn(movies);
         when(movieService.getRandomMovies()).thenReturn(movies);
         when(movieService.getMoviesByGenre(any(), any())).thenReturn(movies);
     }
 
+
     @Test
     public void getAllMovies() throws Exception {
-        initMock();
+
         mvc.perform(
                 get("/movie")
                         .accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
@@ -103,7 +106,7 @@ public class MoviesControllerTest {
 
     @Test
     public void getRandomMovies() throws Exception {
-        initMock();
+
         mvc.perform(
                 get("/movie/random")
                         .accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
@@ -124,7 +127,7 @@ public class MoviesControllerTest {
 
     @Test
     public void getByGenre() throws Exception {
-        initMock();
+
         mvc.perform(
                 get("/movie/genre/1")
                         .accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
