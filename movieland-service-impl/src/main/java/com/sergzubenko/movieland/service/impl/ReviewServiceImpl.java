@@ -1,6 +1,7 @@
 package com.sergzubenko.movieland.service.impl;
 
 import com.sergzubenko.movieland.entity.Movie;
+import com.sergzubenko.movieland.entity.Review;
 import com.sergzubenko.movieland.persistance.api.ReviewUserDao;
 import com.sergzubenko.movieland.service.api.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,5 +24,10 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void enrichMovie(Movie movie) {
         reviewUserDao.enrichMovies(Collections.singletonList(movie));
+    }
+
+    @Override
+    public void save(Review review) {
+        reviewUserDao.save(review);
     }
 }

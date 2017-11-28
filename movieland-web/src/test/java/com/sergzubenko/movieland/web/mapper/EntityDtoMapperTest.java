@@ -1,11 +1,11 @@
-package com.sergzubenko.movieland.web.util;
+package com.sergzubenko.movieland.web.mapper;
 
 import com.sergzubenko.movieland.entity.Country;
 import com.sergzubenko.movieland.entity.Genre;
 import com.sergzubenko.movieland.entity.Movie;
-import com.sergzubenko.movieland.web.dto.MovieCompactViewDto;
-import com.sergzubenko.movieland.web.dto.MovieRandomViewDto;
-import com.sergzubenko.movieland.web.dto.MovieSingleViewDto;
+import com.sergzubenko.movieland.web.dto.movie.MovieCompactViewDto;
+import com.sergzubenko.movieland.web.dto.movie.MovieRandomViewDto;
+import com.sergzubenko.movieland.web.dto.movie.MovieSingleViewDto;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public class EntityDtoMapperTest {
         movie.setGenres(genres);
 
 
-        MovieCompactViewDto dto1 = EntityDtoMapper.map(movie, MovieCompactViewDto.class);
+        MovieCompactViewDto dto1 = EntityDtoReflectionMapper.map(movie, MovieCompactViewDto.class);
         //System.out.println(EntityDtoMapper.map(movie, MovieCompactViewDto.class));
 
         assertEquals(movie.getId(), dto1.getId());
@@ -48,7 +48,7 @@ public class EntityDtoMapperTest {
         assertEquals(movie.getNameRussian(), dto1.getNameRussian());
 
         //System.out.println(EntityDtoMapper.map(movie, MovieRandomViewDto.class));
-        MovieRandomViewDto dto2 = EntityDtoMapper.map(movie, MovieRandomViewDto.class);
+        MovieRandomViewDto dto2 = EntityDtoReflectionMapper.map(movie, MovieRandomViewDto.class);
         assertEquals(movie.getId(), dto2.getId());
         assertEquals(movie.getYearOfRelease(), dto2.getYearOfRelease());
         assertEquals(movie.getPrice(), dto2.getPrice());
@@ -69,7 +69,7 @@ public class EntityDtoMapperTest {
 
         //System.out.println(EntityDtoMapper.map(movie, MovieSingleViewDto.class));
 
-        MovieSingleViewDto dto3 = EntityDtoMapper.map(movie, MovieSingleViewDto.class);
+        MovieSingleViewDto dto3 = EntityDtoReflectionMapper.map(movie, MovieSingleViewDto.class);
         assertEquals(movie.getId(), dto3.getId());
         assertEquals(movie.getYearOfRelease(), dto3.getYearOfRelease());
         assertEquals(movie.getPrice(), dto3.getPrice());

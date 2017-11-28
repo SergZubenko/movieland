@@ -1,54 +1,49 @@
 package com.sergzubenko.movieland.web.security;
 
 import com.sergzubenko.movieland.entity.UserRole;
-import com.sergzubenko.movieland.service.impl.security.UserPrincipal;
-import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
+import com.sergzubenko.movieland.service.impl.security.UserPrincipalImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import java.util.Collections;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
-import static com.sergzubenko.movieland.web.security.utils.UserRoleHandler.getRequiredRoles;
+import static com.sergzubenko.movieland.web.security.annotation.HasRoleHandler.getRequiredRoles;
 
-public class SecurityInterceptor implements HandlerInterceptor {
+public class SecurityInterceptor extends HandlerInterceptorAdapter {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) throws Exception {
-        UserPrincipal principal = (UserPrincipal) request.getUserPrincipal();
-        Set<UserRole> requiredRoles = getRequiredRoles(handler.getClass());
 
+        Optional<UserPrincipalImpl> principal = Optional.ofNullable((UserPrincipalImpl) request.getUserPrincipal());
 
+        MDC.put("requestId", UUID.randomUUID().toString());
+        MDC.put("nickname", principal.map((p) -> p.getUser().getNickname()).orElse("Unauthorized"));
 
-        if (requiredRoles.size() == 0){
-            return true;
-        }
+        logger.info("Pre handle intercept");
 
-//        HandlerMethod method = (HandlerMethod) handler;
+        Set<UserRole> requiredRoles = getRequiredRoles(handler);
 
-        Set<UserRole> grantedRoles = principal.getAuthorities();
-        for (UserRole requiredRole : requiredRoles) {
-            if (grantedRoles.contains(requiredRole))
-                return true;
-        }
+        return (requiredRoles.size() == 0 || (principal.isPresent() && !Collections.disjoint(requiredRoles, principal.get().getAuthorities())))
+                && super.preHandle(request, response, handler);
 
-        return false;
-    }
-
-    @Override
-    public void postHandle(HttpServletRequest request,
-                           HttpServletResponse response, Object handler,
-                           ModelAndView modelAndView) throws Exception {
-        System.out.println("Post-handle");
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request,
                                 HttpServletResponse response, Object handler, Exception ex)
             throws Exception {
-        System.out.println("After completion handle");
+
+        MDC.clear();
+        super.afterCompletion(request, response, handler, ex);
     }
 }

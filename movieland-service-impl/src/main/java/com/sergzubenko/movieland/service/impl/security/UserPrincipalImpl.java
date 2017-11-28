@@ -2,39 +2,33 @@ package com.sergzubenko.movieland.service.impl.security;
 
 import com.sergzubenko.movieland.entity.User;
 import com.sergzubenko.movieland.entity.UserRole;
-import com.sergzubenko.movieland.service.api.security.LoginPasswordPrincipal;
+import com.sergzubenko.movieland.service.api.security.UserPrincipal;
 
 import java.util.Set;
 
-public class UserPrincipal implements LoginPasswordPrincipal {
+public class UserPrincipalImpl implements UserPrincipal {
 
     private User user;
 
-    private String username;
-    private String password;
-
     private Set<UserRole> authorities;
 
-    public UserPrincipal(String username, String password) {
-        this.username = username;
-        this.password = password;
+    public UserPrincipalImpl(User user) {
+        this.user = user;
     }
 
     @Override
     public String getName() {
-        return username;
+        return user.getEmail();
     }
 
     @Override
     public String getPassword() {
-        return password;
+        return user.getPassword();
     }
 
     @Override
     public void setUser(User user) {
         this.user = user;
-        this.username = user.getEmail();
-        this.password = user.getPassword();
     }
 
     @Override
@@ -47,9 +41,9 @@ public class UserPrincipal implements LoginPasswordPrincipal {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UserPrincipal that = (UserPrincipal) o;
+        UserPrincipalImpl that = (UserPrincipalImpl) o;
 
-        return username.equals(that.username);
+        return user.getEmail().equals(that.user.getEmail());
     }
 
     public Set<UserRole> getAuthorities() {

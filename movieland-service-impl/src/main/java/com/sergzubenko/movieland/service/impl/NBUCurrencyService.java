@@ -67,7 +67,7 @@ public class NBUCurrencyService implements CurrencyService {
 
     private void loadFromServer() throws IOException {
 
-        List<currencyFormat> loadedCurrencies = objectMapper.readValue(new URL(url), new TypeReference<List<currencyFormat>>() {
+        List<CurrencyFormat> loadedCurrencies = objectMapper.readValue(new URL(url), new TypeReference<List<CurrencyFormat>>() {
         });
 
         ratesCache = loadedCurrencies.stream()
@@ -75,11 +75,9 @@ public class NBUCurrencyService implements CurrencyService {
                 .collect(Collectors.toMap(c -> c.cc.toUpperCase(), r -> r.rate));
     }
 
-    private static class currencyFormat {
-        // private String text;
+    private static class CurrencyFormat {
         private double rate;
         private String cc;
-        //private String exchangedate;
     }
 }
 

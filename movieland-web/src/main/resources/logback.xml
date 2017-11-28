@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <appender nickname="log_file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="log_file" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>/logs/movieland.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <FileNamePattern>/logs/movieland-%d{yyyy-MM-dd}.log.%i</FileNamePattern>
-            <MaxFileSize>5MB</MaxFileSize>
+            <fileNamePattern>logs/movieland-%d{yyyy-MM-dd}.log.%i</fileNamePattern>
+            <maxFileSize>5MB</maxFileSize>
         </rollingPolicy>
         <encoder>
-            <Pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</Pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %X{requestId} %X{nickname} %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <root>
-        <appender-ref ref="log_file" level="DEBUG" />
+    <appender name="log_console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %X{requestId} %X{nickname} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="log_file"/>
+        <appender-ref ref="log_console"/>
     </root>
 </configuration>

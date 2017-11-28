@@ -1,11 +1,13 @@
 package com.sergzubenko.movieland.web.controller;
 
+import com.sergzubenko.movieland.entity.Review;
 import com.sergzubenko.movieland.entity.User;
-import com.sergzubenko.movieland.service.api.security.AccessToken;
+import com.sergzubenko.movieland.entity.UserRole;
+import com.sergzubenko.movieland.service.api.ReviewService;
 import com.sergzubenko.movieland.service.api.security.LoginService;
+import com.sergzubenko.movieland.service.api.security.UserPrincipal;
 import com.sergzubenko.movieland.service.impl.config.ServiceConfig;
 import com.sergzubenko.movieland.service.impl.security.UserPrincipalImpl;
-import com.sergzubenko.movieland.service.impl.security.token.UUIDBasedToken;
 import com.sergzubenko.movieland.web.config.WebAppConfig;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -23,69 +26,86 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
-import static org.mockito.Matchers.matches;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {WebAppConfig.class, ServiceConfig.class})
+@ContextConfiguration(classes = {WebAppConfig.class, ServiceConfig.class, ReviewControllerTest.TestConfiguration.class})
 @WebAppConfiguration
-public class LoginControllerTest {
+public class ReviewControllerTest {
     private MockMvc mvc;
 
+    @Mock
+    private ReviewService reviewService;
 
     @Mock
     private LoginService loginService;
 
     @InjectMocks
-    private LoginController loginController;
+    private ReviewController reviewController;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
         mvc = MockMvcBuilders
-                .standaloneSetup(loginController)
+                .standaloneSetup(reviewController)
                 .build();
 
+        doAnswer(invocation -> {
+            Object[] args = invocation.getArguments();
+            Review review = (Review) args[0];
+            review.setId(100);
+            return null;
+        }).when(reviewService).save(any(Review.class));
+
+    }
+
+    @Test
+    public void postReview() throws Exception {
+        String request = "{\n" +
+                "\"movieId\" : 1,\n" +
+                "\"text\" : \"Очень понравилось!\"\n" +
+                "}";
         User user = new User();
         user.setNickname("Some guy");
         user.setPassword("password");
 
-        UserPrincipalImpl principal = new UserPrincipalImpl(user);
+        UserPrincipal principal = new UserPrincipalImpl(user);
 
-        AccessToken token = new UUIDBasedToken(principal, LocalDateTime.now());
-        when(loginService.login(matches("someguy"), matches("password"))).thenReturn(token);
-    }
+        Set<UserRole> roles = new HashSet<>();
+        roles.add(UserRole.USER);
+        roles.add(UserRole.ADMIN);
+        principal.setAuthorities(roles);
 
-
-    @Test
-    public void login() throws Exception {
-        String request = "{\n" +
-                "\"email\" : \"someguy\",\n" +
-                "\"password\" : \"password\"\n" +
-                "}";
         mvc.perform(
-                post("/login", request)
+                post("/review")
+                        .principal(principal)
                         .content(request)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                        .accept(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header("uuid", "111111111111111111111")
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+        )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("nickname").value("Some guy"));
+                .andExpect(jsonPath("id").value("100"));
     }
-
 
 
     @Configuration
-    static class config {
+    static class TestConfiguration {
+
         @Bean
-        LoginService loginService() {
-            return mock(LoginService.class);
+        @Primary
+        ReviewController reviewController() {
+            return null;
         }
+
     }
+
+
 }

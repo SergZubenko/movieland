@@ -7,7 +7,7 @@ import com.sergzubenko.movieland.entity.UserRole;
 import java.security.Principal;
 import java.util.Set;
 
-public interface LoginPasswordPrincipal extends Principal {
+public interface UserPrincipal extends Principal {
     String getPassword();
 
     void setUser(User user);

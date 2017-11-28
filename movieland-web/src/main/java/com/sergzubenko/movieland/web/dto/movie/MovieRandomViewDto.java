@@ -1,14 +1,23 @@
-package com.sergzubenko.movieland.web.dto;
+package com.sergzubenko.movieland.web.dto.movie;
 
-public class MovieCompactViewDto {
+import com.sergzubenko.movieland.entity.Country;
+import com.sergzubenko.movieland.entity.Genre;
 
+import java.util.List;
+
+public class MovieRandomViewDto {
     private Integer id;
     private String nameRussian;
     private String nameNative;
     private Integer yearOfRelease;
+    private String description;
     private String picturePath;
+
     private Double rating;
     private Double price;
+
+    private List<Country> countries;
+    private List<Genre> genres;
 
     public Integer getId() {
         return id;
@@ -50,6 +59,14 @@ public class MovieCompactViewDto {
         this.yearOfRelease = yearOfRelease;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public Double getRating() {
         return rating;
     }
@@ -66,17 +83,35 @@ public class MovieCompactViewDto {
         this.price = price;
     }
 
+    public List<Country> getCountries() {
+        return countries;
+    }
+
+    public void setCountries(List<Country> countries) {
+        this.countries = countries;
+    }
+
+    public List<Genre> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(List<Genre> genres) {
+        this.genres = genres;
+    }
+
     @Override
     public String toString() {
-        return "MovieCompactViewDto{" +
+        return "MovieRandomViewDto{" +
                 "id=" + id +
                 ", nameRussian='" + nameRussian + '\'' +
                 ", nameNative='" + nameNative + '\'' +
                 ", yearOfRelease=" + yearOfRelease +
+                ", description='" + description + '\'' +
                 ", picturePath='" + picturePath + '\'' +
                 ", rating=" + rating +
                 ", price=" + price +
+                ", countries=" + countries +
+                ", genres=" + genres +
                 '}';
     }
 }
-

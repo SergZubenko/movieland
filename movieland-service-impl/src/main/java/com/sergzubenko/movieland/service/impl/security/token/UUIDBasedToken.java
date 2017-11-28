@@ -1,8 +1,8 @@
 package com.sergzubenko.movieland.service.impl.security.token;
 
 import com.sergzubenko.movieland.service.api.security.AccessToken;
+import com.sergzubenko.movieland.service.api.security.UserPrincipal;
 
-import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -14,10 +14,10 @@ public class UUIDBasedToken implements AccessToken {
 
     private volatile LocalDateTime expirationTime;
 
-    private final Principal principal;
+    private final UserPrincipal principal;
 
 
-    public UUIDBasedToken(Principal principal, LocalDateTime expirationTime) {
+    public UUIDBasedToken(UserPrincipal principal, LocalDateTime expirationTime) {
         uid = UUID.randomUUID().toString();
         this.principal = principal;
         this.logonTime = LocalDateTime.now();
@@ -40,7 +40,7 @@ public class UUIDBasedToken implements AccessToken {
     }
 
     @Override
-    public Principal getPrincipal() {
+    public UserPrincipal getPrincipal() {
         return principal;
     }
 

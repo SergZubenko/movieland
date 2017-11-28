@@ -1,20 +1,18 @@
 package com.sergzubenko.movieland.web.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sergzubenko.movieland.service.api.security.AccessToken;
 import com.sergzubenko.movieland.service.api.security.LoginService;
-import com.sergzubenko.movieland.service.impl.security.UserPrincipal;
+import com.sergzubenko.movieland.service.impl.security.dto.LoginResponseDto;
+import com.sergzubenko.movieland.service.impl.security.exception.AlreadyLoggedInException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.util.HashMap;
+import java.security.Principal;
 import java.util.Map;
 
 
@@ -27,40 +25,27 @@ public class LoginController {
     @Autowired
     private LoginService loginService;
 
-    @RequestMapping(path = "/login", method = RequestMethod.POST)
-    public ResponseEntity<?> login(@RequestBody String json) {
-        ObjectMapper mapper = new ObjectMapper();
+    @RequestMapping(path = "/login", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<?> login(@RequestBody Map<String, String> request, Principal principal) {
 
-        Map<String, String> request;
-        try {
-            request = mapper.readValue(json, new TypeReference<Map<String, String>>() {
-            });
-        } catch (IOException e) {
-            logger.error("Can't parse input params");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        logger.info("User " + request.get("email") + " is trying to login");
+
+        if (principal != null) {
+            logger.warn("User is already logged in");
+            throw new AlreadyLoggedInException("User is already logged in");
         }
 
-        UserPrincipal principal = new UserPrincipal(request.get("email"), request.get("password"));
-
-        AccessToken accessToken = loginService.login(principal);
-
-        Map<String, String> response = new HashMap<>();
-        response.put("uuid", accessToken.uid());
-        response.put("nickname", principal.getUser().getNickname());
-        String responseJson;
-        try {
-            responseJson = mapper.writeValueAsString(response);
-        } catch (JsonProcessingException e) {
-            logger.error("Error while creating response", e);
-            throw new RuntimeException(e);
-        }
-
-        return new ResponseEntity<>(responseJson, HttpStatus.OK);
+        AccessToken accessToken = loginService.login(request.get("email"), request.get("password"));
+        LoginResponseDto dto = new LoginResponseDto();
+        dto.setNickname(accessToken.getPrincipal().getUser().getNickname());
+        dto.setUuid(accessToken.uid());
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-
     @RequestMapping(path = "/logout", method = RequestMethod.DELETE)
-    public ResponseEntity<?> logout(@RequestHeader String uuid) {
+    public ResponseEntity<?> logout(@RequestHeader String uuid, Principal principal) {
+        logger.info("User " + principal.getName() + " is logged out");
         loginService.logout(uuid);
         return new ResponseEntity<>(HttpStatus.OK);
     }

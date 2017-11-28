@@ -5,53 +5,35 @@ import com.sergzubenko.movieland.service.api.security.LoginService;
 import com.sergzubenko.movieland.service.impl.security.exception.TokenNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.IOException;
-import java.security.Principal;
+import java.util.Optional;
 
+@WebFilter("/v1/*")
 public class SecurityFilter implements Filter {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Autowired
     private LoginService loginService;
-
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-
-
+        loginService = WebApplicationContextUtils.getWebApplicationContext(filterConfig.getServletContext())
+                .getBean(LoginService.class);
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        String tokenId = httpServletRequest.getHeader("uuid");
-
-        AccessToken token = null;
-        try {
-            token = loginService.getValidToken(tokenId);
-        } catch (TokenNotFoundException e) {
-            logger.warn("token was not restored");
+        Optional<AccessToken> optToken = getTokenFromRequest(request);
+        if (optToken.isPresent()) {
+            request = new CustomPrincipalHttpServletRequestWrapper((HttpServletRequest) request, optToken.get().getPrincipal());
         }
 
-        if (token != null) {
-            Principal principal = token.getPrincipal();
-
-            HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(httpServletRequest) {
-                @Override
-                public Principal getUserPrincipal() {
-                    return principal;
-                }
-            };
-
-            chain.doFilter(requestWrapper, response);
-        } else
-            chain.doFilter(request, response);
+        chain.doFilter(request, response);
     }
 
     @Override
@@ -59,5 +41,22 @@ public class SecurityFilter implements Filter {
 
     }
 
+    private Optional<AccessToken> getTokenFromRequest(ServletRequest request) {
 
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        Optional<String> tokenId = Optional.ofNullable(httpServletRequest.getHeader("uuid"));
+
+        if (!tokenId.isPresent()) {
+            return Optional.empty();
+        }
+
+        AccessToken token;
+        try {
+            token = loginService.getValidToken(tokenId.get());
+            return Optional.of(token);
+        } catch (TokenNotFoundException e) {
+            logger.warn("token was not restored");
+            return Optional.empty();
+        }
+    }
 }

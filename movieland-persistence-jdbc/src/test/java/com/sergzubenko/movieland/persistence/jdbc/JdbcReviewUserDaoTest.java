@@ -8,28 +8,38 @@ import com.sergzubenko.movieland.persistance.api.ReviewUserDao;
 import com.sergzubenko.movieland.persistence.jdbc.config.PersistenceConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.sql.DataSource;
 import java.util.List;
 
 import static junit.framework.TestCase.assertNull;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = PersistenceConfig.class)
 @DirtiesContext
 public class JdbcReviewUserDaoTest {
+    private final Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
 
     @Autowired
-    private
-    ReviewUserDao reviewUserDao;
+    private ReviewUserDao reviewUserDao;
 
     @Autowired
-    private
-    MovieDao movieDao;
+    private MovieDao movieDao;
+
 
     private void checkUser(User user) {
         assertNotNull(user.getNickname());
@@ -57,5 +67,51 @@ public class JdbcReviewUserDaoTest {
                 }
             }
         }
+    }
+
+    @Test
+    @Rollback
+    @Transactional
+    public void saveReview() {
+        Review review = null;
+        for (int i = 0; i <= 5; i++) {
+            List<Movie> movies = movieDao.getRandomMovies();
+            reviewUserDao.enrichMovies(movies);
+            for (Movie movie : movies) {
+                if (movie.getReviews() != null) {
+                    review = movie.getReviews().get(0);
+                    logger.info("found review {}", review);
+                    break;
+                }
+            }
+        }
+
+        if (review == null) {
+            logger.error("Template review does not found");
+            throw new RuntimeException("Template review does not found");
+        }
+
+        review.setId(null);
+        review.setText("test review");
+
+        reviewUserDao.save(review);
+        assertNotNull(review.getId());
+        Integer oldId = review.getId();
+
+        reviewUserDao.save(review);
+
+        assertEquals(oldId, review.getId());
+    }
+
+    @Configuration
+    static class TransactionConfiguration {
+        @Autowired
+        DataSource dataSource;
+
+        @Bean
+        public PlatformTransactionManager transactionManager() {
+            return new DataSourceTransactionManager(dataSource);
+        }
+
     }
 }

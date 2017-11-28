@@ -1,7 +1,8 @@
-package com.sergzubenko.movieland.web.dto;
+package com.sergzubenko.movieland.web.dto.movie;
 
 import com.sergzubenko.movieland.entity.Country;
 import com.sergzubenko.movieland.entity.Genre;
+import com.sergzubenko.movieland.web.dto.review.ReviewUserViewDto;
 
 import java.util.List;
 

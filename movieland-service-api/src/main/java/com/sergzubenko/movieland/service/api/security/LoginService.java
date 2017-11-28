@@ -1,10 +1,8 @@
 package com.sergzubenko.movieland.service.api.security;
 
-import java.security.Principal;
-
 public interface LoginService {
 
-    AccessToken login(Principal principal);
+    AccessToken login(String username, String password);
 
     void logout(String token);
 

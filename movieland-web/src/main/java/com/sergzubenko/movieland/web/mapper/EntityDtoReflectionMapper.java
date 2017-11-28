@@ -1,11 +1,11 @@
-package com.sergzubenko.movieland.web.util;
+package com.sergzubenko.movieland.web.mapper;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EntityDtoMapper {
+public class EntityDtoReflectionMapper {
 
     public static <T, S> T map(S src, Class<T> destClass) {
         try {

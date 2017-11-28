@@ -1,6 +1,5 @@
 package com.sergzubenko.movieland.service.api.security;
 
-import java.security.Principal;
 
 public interface AccessToken {
 
@@ -10,6 +9,6 @@ public interface AccessToken {
 
     void invalidate();
 
-    Principal getPrincipal();
+    UserPrincipal getPrincipal();
 
 }

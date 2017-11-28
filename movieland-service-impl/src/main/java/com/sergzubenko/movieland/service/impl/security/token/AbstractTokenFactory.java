@@ -1,9 +1,8 @@
 package com.sergzubenko.movieland.service.impl.security.token;
 
 import com.sergzubenko.movieland.service.api.security.AccessToken;
-
-import java.security.Principal;
+import com.sergzubenko.movieland.service.api.security.UserPrincipal;
 
 public abstract class AbstractTokenFactory {
-    public abstract AccessToken generateToken(Principal principal);
+    public abstract AccessToken generateToken(UserPrincipal principal);
 }
