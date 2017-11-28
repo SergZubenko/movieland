@@ -9,7 +9,7 @@ public class EntityDtoReflectionMapper {
 
     public static <T, S> T map(S src, Class<T> destClass) {
         try {
-            return map0(src, destClass);
+            return mapObject(src, destClass);
         } catch (IllegalAccessException | NoSuchFieldException | InstantiationException | ClassNotFoundException e) {
             e.printStackTrace();
             throw new RuntimeException("Cant map Dto", e);
@@ -25,7 +25,7 @@ public class EntityDtoReflectionMapper {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T, S> T map0(S src, Class<T> destClass) throws IllegalAccessException, NoSuchFieldException, InstantiationException, ClassNotFoundException {
+    private static <T, S> T mapObject(S src, Class<T> destClass) throws IllegalAccessException, NoSuchFieldException, InstantiationException, ClassNotFoundException {
 
         if (src == null){
             return null;
@@ -54,7 +54,7 @@ public class EntityDtoReflectionMapper {
                 Class<?> clazz = Class.forName(((ParameterizedType) destField.getGenericType()).getActualTypeArguments()[0].getTypeName());
                 List<Object> list = new ArrayList<>(srcColl.size());
                 for (Object o : srcColl) {
-                    list.add(map0(o, clazz));
+                    list.add(mapObject(o, clazz));
                 }
                 destField.setAccessible(true);
                 destField.set(dto, list);
@@ -62,7 +62,7 @@ public class EntityDtoReflectionMapper {
             } else {
 
                 destField.setAccessible(true);
-                destField.set(dto, map0(srcValue, destField.getType()));
+                destField.set(dto, mapObject(srcValue, destField.getType()));
                 destField.setAccessible(false);
 
             }

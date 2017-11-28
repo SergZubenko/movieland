@@ -39,7 +39,6 @@ public class EntityDtoMapperTest {
 
 
         MovieCompactViewDto dto1 = EntityDtoReflectionMapper.map(movie, MovieCompactViewDto.class);
-        //System.out.println(EntityDtoMapper.map(movie, MovieCompactViewDto.class));
 
         assertEquals(movie.getId(), dto1.getId());
         assertEquals(movie.getYearOfRelease(), dto1.getYearOfRelease());
@@ -47,7 +46,6 @@ public class EntityDtoMapperTest {
         assertEquals(movie.getNameNative(), dto1.getNameNative());
         assertEquals(movie.getNameRussian(), dto1.getNameRussian());
 
-        //System.out.println(EntityDtoMapper.map(movie, MovieRandomViewDto.class));
         MovieRandomViewDto dto2 = EntityDtoReflectionMapper.map(movie, MovieRandomViewDto.class);
         assertEquals(movie.getId(), dto2.getId());
         assertEquals(movie.getYearOfRelease(), dto2.getYearOfRelease());
@@ -67,7 +65,6 @@ public class EntityDtoMapperTest {
             assertArrayEquals(movie.getGenres().toArray(), dto2.getGenres().toArray());
         }
 
-        //System.out.println(EntityDtoMapper.map(movie, MovieSingleViewDto.class));
 
         MovieSingleViewDto dto3 = EntityDtoReflectionMapper.map(movie, MovieSingleViewDto.class);
         assertEquals(movie.getId(), dto3.getId());
@@ -94,7 +91,5 @@ public class EntityDtoMapperTest {
         } else {
             assertArrayEquals(movie.getReviews().toArray(), dto3.getReviews().toArray());
         }
-
     }
-
 }
