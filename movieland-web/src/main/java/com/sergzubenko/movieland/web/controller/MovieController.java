@@ -69,21 +69,22 @@ public class MovieController {
             logger.error("User {} tried to add  already existing movie {}", principal.getUser(), movieDto);
             throw new IllegalArgumentException("Attempt to add existing movie");
         }
-        return persistMovie(movieDto);
+        return persistMovie(movieDto, null);
     }
 
-    @RequestMapping(method = PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(path = "/{movieId}", method = PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     @HasRole(UserRole.ADMIN)
-    public void updateMovie(@RequestBody MoviePersistenceDto movieDto, UserPrincipal principal) {
-        persistMovie(movieDto);
+    public void updateMovie(@PathVariable Integer movieId, @RequestBody MoviePersistenceDto movieDto, UserPrincipal principal) {
+        persistMovie(movieDto, movieId);
     }
 
-    private Movie persistMovie(MoviePersistenceDto movieDto){
+    private Movie persistMovie(MoviePersistenceDto movieDto, Integer movieId){
         logger.info("Sending request to persist movie");
         long startTime = System.currentTimeMillis();
 
         Movie movie = EntityDtoReflectionMapper.map(movieDto, Movie.class);
+        movie.setId(movieId);
         movieService.persist(movie);
 
         logger.info("Movie {} was stored. It took {} ms", movie, System.currentTimeMillis() - startTime);
