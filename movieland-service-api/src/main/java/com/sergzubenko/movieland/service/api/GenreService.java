@@ -13,4 +13,6 @@ public interface GenreService {
 
     void enrichMovie(Movie movie);
 
+    void persistMovieGenres(Movie movie);
+
 }

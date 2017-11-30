@@ -32,6 +32,11 @@ public class CachedGenreDao implements GenreDao {
     }
 
     @Override
+    public void persistMovieGenres(Movie movie) {
+        genreDao.persistMovieGenres(movie);
+    }
+
+    @Override
     public List<Genre> getAll() {
         return new ArrayList<>(cache);
     }

@@ -30,4 +30,10 @@ public class CountryServiceImpl implements CountryService {
     public void enrichMovie(Movie movie) {
         countryDao.enrichMovies(Collections.singletonList(movie));
     }
+
+    @Override
+    public void persistMovieCountries(Movie movie) {
+        countryDao.persistMovieCountries(movie);
+    }
+
 }

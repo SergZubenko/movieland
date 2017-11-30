@@ -20,7 +20,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.matches;
 import static org.mockito.Mockito.when;
@@ -55,7 +56,6 @@ public class LoginPasswordAuthManagerTest {
     public void auth() throws Exception {
         UserPrincipal principal = manager.auth("login", "password");
         assertEquals("login", principal.getName());
-        assertEquals("password", principal.getPassword());
         Set<UserRole> roles = principal.getAuthorities();
         assertTrue(roles.contains(UserRole.USER));
         assertTrue(roles.contains(UserRole.ADMIN));

@@ -9,11 +9,12 @@ import com.sergzubenko.movieland.web.dto.movie.MovieSingleViewDto;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class EntityDtoMapperTest {
+public class EntityDtoReflectionMapperTest {
 
     @Test
     public void map() throws Exception {
@@ -92,4 +93,62 @@ public class EntityDtoMapperTest {
             assertArrayEquals(movie.getReviews().toArray(), dto3.getReviews().toArray());
         }
     }
+
+
+    @Test
+    public void mapTest(){
+
+        From from = new From();
+
+        To to = EntityDtoReflectionMapper.map(from, To.class);
+
+        assertEquals(to.someName, from.someName);
+        assertNull(to.someNameSkipped);
+        assertEquals(to.innerList.size(), 3);
+        assertEquals(1, to.innerList.get(0).id);
+        assertEquals(2, to.innerList.get(1).id);
+        assertEquals(3, to.innerList.get(2).id);
+
+
+    }
+
+    static class TestCollection{
+        int id;
+        String name;
+
+        @Override
+        public String toString() {
+            return "TestCollection{" +
+                    "id=" + id +
+                    ", name='" + name + '\'' +
+                    '}';
+        }
+    }
+
+    static class To {
+
+        String someName;
+        String someNameSkipped;
+        List<TestCollection> innerList;
+
+        @Override
+        public String toString() {
+            return "To{" +
+                    "someName='" + someName + '\'' +
+                    ", innerList=" + innerList +
+                    '}';
+        }
+    }
+
+    static class From {
+        int someId = 100;
+        String someName = "Abram";
+
+        @Skip
+        String someNameSkipped = "Skipped";
+
+        @TransformTo(field = "id", clazz = TestCollection.class)
+        List<Integer> innerList = Arrays.asList(1,2,3);
+    }
+
 }

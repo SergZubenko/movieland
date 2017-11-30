@@ -1,6 +1,7 @@
 package com.sergzubenko.movieland.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sergzubenko.movieland.service.api.CurrencyService;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 public class NBUCurrencyService implements CurrencyService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     private List<String> currencies;
 
     volatile private Map<String, Double> ratesCache = new HashMap<>();

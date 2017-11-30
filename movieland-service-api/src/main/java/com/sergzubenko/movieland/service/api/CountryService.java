@@ -12,4 +12,6 @@ public interface CountryService {
     void enrichMovies(List<Movie> movies);
 
     void enrichMovie(Movie movies);
+
+    void persistMovieCountries(Movie movie);
 }

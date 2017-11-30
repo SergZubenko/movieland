@@ -5,6 +5,7 @@ import com.sergzubenko.movieland.persistance.api.MovieDao;
 import com.sergzubenko.movieland.service.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -33,7 +34,6 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public List<Movie> getRandomMovies() {
-
         List<Movie> movies = movieDao.getRandomMovies();
         countryService.enrichMovies(movies);
         genreService.enrichMovies(movies);
@@ -56,7 +56,7 @@ public class MovieServiceImpl implements MovieService {
         if (currency != null) {
             double rate = currencyService.getRate(currency);
             if (rate != 0) {
-                movie.setPrice((new BigDecimal(movie.getPrice())).divide(new BigDecimal(rate),2, ROUND_UP).doubleValue());
+                movie.setPrice((new BigDecimal(movie.getPrice())).divide(new BigDecimal(rate), 2, ROUND_UP).doubleValue());
             }
         }
 
@@ -70,5 +70,27 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public Movie getById(Integer id) {
         return getById(id, null);
+    }
+
+    @Override
+    @Transactional
+    public void persist(Movie movie) {
+
+        movieDao.persist(movie);
+
+        genreService.persistMovieGenres(movie);
+        countryService.persistMovieCountries(movie);
+
+        if (movie.getCountries() != null) {
+            movie.getCountries().clear();
+        }
+
+        if (movie.getGenres() != null) {
+            movie.getGenres().clear();
+        }
+
+        countryService.enrichMovie(movie);
+        genreService.enrichMovie(movie);
+
     }
 }

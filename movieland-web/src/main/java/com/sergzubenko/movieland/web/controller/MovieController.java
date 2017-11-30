@@ -1,11 +1,16 @@
 package com.sergzubenko.movieland.web.controller;
 
 
+import com.sergzubenko.movieland.entity.Movie;
+import com.sergzubenko.movieland.entity.UserRole;
 import com.sergzubenko.movieland.service.api.MovieService;
+import com.sergzubenko.movieland.service.api.security.UserPrincipal;
 import com.sergzubenko.movieland.web.dto.movie.MovieCompactViewDto;
+import com.sergzubenko.movieland.web.dto.movie.MoviePersistenceDto;
 import com.sergzubenko.movieland.web.dto.movie.MovieRandomViewDto;
 import com.sergzubenko.movieland.web.dto.movie.MovieSingleViewDto;
 import com.sergzubenko.movieland.web.mapper.EntityDtoReflectionMapper;
+import com.sergzubenko.movieland.web.security.annotation.HasRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +19,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @RestController
 @CrossOrigin
@@ -50,4 +58,37 @@ public class MovieController {
         logger.debug("Invoked getMoviesByGenre controller");
         return EntityDtoReflectionMapper.mapList(movieService.getMoviesByGenre(genreId, params), MovieCompactViewDto.class);
     }
+
+    @RequestMapping(method = POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    @HasRole(UserRole.ADMIN)
+    public Movie addMovie(@RequestBody MoviePersistenceDto movieDto, UserPrincipal principal) {
+
+        if (movieDto.getId() != null)
+        {
+            logger.error("User {} tried to add  already existing movie {}", principal.getUser(), movieDto);
+            throw new IllegalArgumentException("Attempt to add existing movie");
+        }
+        return persistMovie(movieDto);
+    }
+
+    @RequestMapping(method = PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    @HasRole(UserRole.ADMIN)
+    public void updateMovie(@RequestBody MoviePersistenceDto movieDto, UserPrincipal principal) {
+        persistMovie(movieDto);
+    }
+
+    private Movie persistMovie(MoviePersistenceDto movieDto){
+        logger.info("Sending request to persist movie");
+        long startTime = System.currentTimeMillis();
+
+        Movie movie = EntityDtoReflectionMapper.map(movieDto, Movie.class);
+        movieService.persist(movie);
+
+        logger.info("Movie {} was stored. It took {} ms", movie, System.currentTimeMillis() - startTime);
+         return movie;
+    }
+
+
 }

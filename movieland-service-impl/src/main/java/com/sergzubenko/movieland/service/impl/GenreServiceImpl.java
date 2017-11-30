@@ -30,4 +30,10 @@ public class GenreServiceImpl implements GenreService {
     public void enrichMovie(Movie movie) {
         genreDao.enrichMovies(Collections.singletonList(movie));
     }
+
+    @Override
+    public void persistMovieGenres(Movie movie) {
+        genreDao.persistMovieGenres(movie);
+    }
+
 }

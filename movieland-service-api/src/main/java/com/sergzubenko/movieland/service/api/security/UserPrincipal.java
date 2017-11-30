@@ -8,7 +8,6 @@ import java.security.Principal;
 import java.util.Set;
 
 public interface UserPrincipal extends Principal {
-    String getPassword();
 
     void setUser(User user);
 

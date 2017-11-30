@@ -16,4 +16,6 @@ public interface MovieService {
     Movie getById(Integer id, String currency);
 
     Movie getById(Integer id);
+
+    void persist(Movie movie);
 }

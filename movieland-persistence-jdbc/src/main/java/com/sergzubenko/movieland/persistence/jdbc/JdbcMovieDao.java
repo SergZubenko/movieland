@@ -6,6 +6,10 @@ import com.sergzubenko.movieland.persistence.jdbc.mapper.MovieMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,6 +25,9 @@ public class JdbcMovieDao implements MovieDao {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
     @Value("${sql.movie.movieByID}")
     private String movieByIdSql;
 
@@ -32,6 +39,10 @@ public class JdbcMovieDao implements MovieDao {
 
     @Value("${sql.movie.moviesByGenre}")
     private String getMoviesByGenreSql;
+
+    @Value("${sql.movie.save}")
+    private String upsertMovieSql;
+
 
     @Value("${sql.common.orderBy}")
     private String orderBySql;
@@ -49,12 +60,33 @@ public class JdbcMovieDao implements MovieDao {
 
     @Override
     public Movie getMovieById(Integer id) {
-        return  jdbcTemplate.queryForObject(movieByIdSql, new Object[]{id}, movieMapper);
+        return jdbcTemplate.queryForObject(movieByIdSql, new Object[]{id}, movieMapper);
     }
 
     @Override
     public List<Movie> getMoviesByGenre(Integer genreId, Map<String, String> params) {
         String sql = prepareOrderedQuery(getMoviesByGenreSql, orderBySql, Movie.class, params);
         return jdbcTemplate.query(sql, new Object[]{genreId}, movieMapper);
+    }
+
+    @Override
+    public void persist(Movie movie) {
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        MapSqlParameterSource parameters = new MapSqlParameterSource()
+                .addValue("id", movie.getId())
+                .addValue("movie_name", movie.getNameRussian())
+                .addValue("movie_name_origin", movie.getNameNative())
+                .addValue("year", movie.getYearOfRelease())
+                .addValue("description", movie.getDescription())
+                .addValue("rating", movie.getRating())
+                .addValue("price", movie.getPrice())
+                .addValue("picture_path", movie.getPicturePath());
+
+        namedParameterJdbcTemplate.update(upsertMovieSql, parameters, keyHolder);
+        if (movie.getId() == null) {
+            movie.setId(keyHolder.getKey().intValue());
+        }
     }
 }

@@ -8,14 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = PersistenceConfig.class)
+@ContextConfiguration(classes = {PersistenceConfig.class})
 @DirtiesContext
 public class JdbcMovieDaoITest {
 
@@ -58,6 +59,20 @@ public class JdbcMovieDaoITest {
         assertEquals(0, movies.size());
     }
 
+
+    @Test
+    @Transactional
+    public void save() throws Exception {
+        Movie movie = new Movie();
+        movie.setNameRussian("Name russian");
+        movie.setNameNative("Name native");
+        movie.setPrice(100.11);
+        movie.setPicturePath("picPath");
+        movie.setRating(10.1);
+        movie.setDescription("description");
+        jdbcMovieDao.persist(movie);
+        assertNotNull(movie.getId());
+    }
 
 }
 
