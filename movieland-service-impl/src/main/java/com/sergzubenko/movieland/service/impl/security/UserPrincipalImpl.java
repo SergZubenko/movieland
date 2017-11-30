@@ -22,11 +22,6 @@ public class UserPrincipalImpl implements UserPrincipal {
     }
 
     @Override
-    public String getPassword() {
-        return user.getPassword();
-    }
-
-    @Override
     public void setUser(User user) {
         this.user = user;
     }

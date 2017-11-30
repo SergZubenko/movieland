@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+
     <appender name="log_file" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>/logs/movieland.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -17,8 +18,9 @@
         </encoder>
     </appender>
 
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="log_file"/>
         <appender-ref ref="log_console"/>
     </root>
+
 </configuration>

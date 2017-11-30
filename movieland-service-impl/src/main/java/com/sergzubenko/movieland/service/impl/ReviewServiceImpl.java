@@ -6,6 +6,7 @@ import com.sergzubenko.movieland.persistance.api.ReviewUserDao;
 import com.sergzubenko.movieland.service.api.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +28,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public void save(Review review) {
         reviewUserDao.save(review);
     }

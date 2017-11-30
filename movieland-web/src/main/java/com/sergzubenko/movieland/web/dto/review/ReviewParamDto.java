@@ -3,7 +3,7 @@ package com.sergzubenko.movieland.web.dto.review;
 public class ReviewParamDto{
     private Integer movieId;
 
-    private String review;
+    private String text;
 
     public Integer getMovieId() {
         return movieId;
@@ -13,12 +13,12 @@ public class ReviewParamDto{
         this.movieId = movieId;
     }
 
-    public String getReview() {
-        return review;
+    public String getText() {
+        return text;
     }
 
-    public void setReview(String review) {
-        this.review = review;
+    public void setText(String text) {
+        this.text = text;
     }
 
 

@@ -4,24 +4,18 @@ import com.sergzubenko.movieland.entity.Movie;
 import com.sergzubenko.movieland.entity.Review;
 import com.sergzubenko.movieland.entity.User;
 import com.sergzubenko.movieland.persistance.api.MovieDao;
-import com.sergzubenko.movieland.persistance.api.ReviewUserDao;
 import com.sergzubenko.movieland.persistence.jdbc.config.PersistenceConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.DataSource;
 import java.util.List;
 
 import static junit.framework.TestCase.assertNull;
@@ -29,13 +23,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = PersistenceConfig.class)
+@ContextConfiguration(classes = {PersistenceConfig.class})
 @DirtiesContext
 public class JdbcReviewUserDaoTest {
     private final Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
 
     @Autowired
-    private ReviewUserDao reviewUserDao;
+    private JdbcReviewUserDao reviewUserDao;
 
     @Autowired
     private MovieDao movieDao;
@@ -103,15 +97,4 @@ public class JdbcReviewUserDaoTest {
         assertEquals(oldId, review.getId());
     }
 
-    @Configuration
-    static class TransactionConfiguration {
-        @Autowired
-        DataSource dataSource;
-
-        @Bean
-        public PlatformTransactionManager transactionManager() {
-            return new DataSourceTransactionManager(dataSource);
-        }
-
-    }
 }
