@@ -1,7 +1,8 @@
-package com.sergzubenko.movieland.web.dto;
+package com.sergzubenko.movieland.web.dto.review;
 
-public class ReviewUserViewDto {
+import com.sergzubenko.movieland.web.dto.UserIdNameViewDto;
 
+public class ReviewAddedDto {
     private Integer id;
 
     private UserIdNameViewDto user;
@@ -31,13 +32,5 @@ public class ReviewUserViewDto {
     public void setText(String text) {
         this.text = text;
     }
-
-    @Override
-    public String toString() {
-        return "ReviewUserViewDto{" +
-                "id=" + id +
-                ", user=" + user +
-                ", text='" + text + '\'' +
-                '}';
-    }
 }
+

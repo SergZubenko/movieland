@@ -1,53 +1,54 @@
 package com.sergzubenko.movieland.service.impl.security;
 
 import com.sergzubenko.movieland.service.api.security.AccessToken;
-import com.sergzubenko.movieland.service.api.security.IAuthManager;
+import com.sergzubenko.movieland.service.api.security.AuthManager;
 import com.sergzubenko.movieland.service.api.security.LoginService;
-import com.sergzubenko.movieland.service.impl.security.token.AbstractTokenFactory;
+import com.sergzubenko.movieland.service.api.security.UserPrincipal;
 import com.sergzubenko.movieland.service.impl.security.token.TokenCache;
+import com.sergzubenko.movieland.service.impl.security.token.UUIDBasedToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.security.InvalidParameterException;
-import java.security.Principal;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class LoginServiceImpl implements LoginService {
+    private static final Logger log = LoggerFactory.getLogger(LoginServiceImpl.class);
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    @Value("${token.expirationTimeSeconds}")
+    Integer tokenLifeTime;
 
     @Autowired
-    private AbstractTokenFactory tokenFactory;
-
-    @Autowired
-    private IAuthManager authManager;
+    private AuthManager authManager;
 
     @Autowired
     private TokenCache tokenCache;
 
     @Override
-    public AccessToken login(Principal principal) {
-        logger.info("User "+principal.getName()+" is logging in");
+    public UserPrincipal login(String username, String password) {
+        log.info("User " + username + " is logging in");
+        return authManager.auth(username, password);
+    }
 
-        authManager.auth(principal);
-
-        AccessToken accessToken = tokenFactory.generateToken(principal);
+    @Override
+    public AccessToken generateNewToken(UserPrincipal principal) {
+        AccessToken accessToken = new UUIDBasedToken(principal, LocalDateTime.now().plusSeconds(tokenLifeTime));
         tokenCache.registerToken(accessToken);
-
         return accessToken;
     }
 
     @Override
     public void logout(String tokenId) {
-        AccessToken token = tokenCache.getToken(tokenId);
-        if (token == null){
-            throw new InvalidParameterException("Token "+tokenId+" invalid");
-        }else if(!token.isExpired()){
-            token.invalidate();
-        }
+        tokenCache.removeToken(tokenId);
     }
 
+    @Override
+    public Optional<AccessToken> getActiveTokenByUUID(String tokenId) {
+        return tokenCache.getToken(tokenId).filter((token) -> !token.isExpired());
+    }
 }
 

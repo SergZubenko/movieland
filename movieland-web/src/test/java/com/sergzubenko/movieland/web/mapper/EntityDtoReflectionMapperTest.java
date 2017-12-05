@@ -1,19 +1,20 @@
-package com.sergzubenko.movieland.web.util;
+package com.sergzubenko.movieland.web.mapper;
 
 import com.sergzubenko.movieland.entity.Country;
 import com.sergzubenko.movieland.entity.Genre;
 import com.sergzubenko.movieland.entity.Movie;
-import com.sergzubenko.movieland.web.dto.MovieCompactViewDto;
-import com.sergzubenko.movieland.web.dto.MovieRandomViewDto;
-import com.sergzubenko.movieland.web.dto.MovieSingleViewDto;
+import com.sergzubenko.movieland.web.dto.movie.MovieCompactViewDto;
+import com.sergzubenko.movieland.web.dto.movie.MovieRandomViewDto;
+import com.sergzubenko.movieland.web.dto.movie.MovieSingleViewDto;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class EntityDtoMapperTest {
+public class EntityDtoReflectionMapperTest {
 
     @Test
     public void map() throws Exception {
@@ -38,8 +39,7 @@ public class EntityDtoMapperTest {
         movie.setGenres(genres);
 
 
-        MovieCompactViewDto dto1 = EntityDtoMapper.map(movie, MovieCompactViewDto.class);
-        //System.out.println(EntityDtoMapper.map(movie, MovieCompactViewDto.class));
+        MovieCompactViewDto dto1 = ObjectTransformer.transform(movie, MovieCompactViewDto.class);
 
         assertEquals(movie.getId(), dto1.getId());
         assertEquals(movie.getYearOfRelease(), dto1.getYearOfRelease());
@@ -47,8 +47,7 @@ public class EntityDtoMapperTest {
         assertEquals(movie.getNameNative(), dto1.getNameNative());
         assertEquals(movie.getNameRussian(), dto1.getNameRussian());
 
-        //System.out.println(EntityDtoMapper.map(movie, MovieRandomViewDto.class));
-        MovieRandomViewDto dto2 = EntityDtoMapper.map(movie, MovieRandomViewDto.class);
+        MovieRandomViewDto dto2 = ObjectTransformer.transform(movie, MovieRandomViewDto.class);
         assertEquals(movie.getId(), dto2.getId());
         assertEquals(movie.getYearOfRelease(), dto2.getYearOfRelease());
         assertEquals(movie.getPrice(), dto2.getPrice());
@@ -67,9 +66,8 @@ public class EntityDtoMapperTest {
             assertArrayEquals(movie.getGenres().toArray(), dto2.getGenres().toArray());
         }
 
-        //System.out.println(EntityDtoMapper.map(movie, MovieSingleViewDto.class));
 
-        MovieSingleViewDto dto3 = EntityDtoMapper.map(movie, MovieSingleViewDto.class);
+        MovieSingleViewDto dto3 = ObjectTransformer.transform(movie, MovieSingleViewDto.class);
         assertEquals(movie.getId(), dto3.getId());
         assertEquals(movie.getYearOfRelease(), dto3.getYearOfRelease());
         assertEquals(movie.getPrice(), dto3.getPrice());
@@ -94,7 +92,63 @@ public class EntityDtoMapperTest {
         } else {
             assertArrayEquals(movie.getReviews().toArray(), dto3.getReviews().toArray());
         }
+    }
 
+
+    @Test
+    public void mapTest(){
+
+        From from = new From();
+
+        To to = ObjectTransformer.transform(from, To.class);
+
+        assertEquals(to.someName, from.someName);
+        assertNull(to.someNameSkipped);
+        assertEquals(to.innerList.size(), 3);
+        assertEquals(1, to.innerList.get(0).id);
+        assertEquals(2, to.innerList.get(1).id);
+        assertEquals(3, to.innerList.get(2).id);
+
+
+    }
+
+    static class TestCollection{
+        int id;
+        String name;
+
+        @Override
+        public String toString() {
+            return "TestCollection{" +
+                    "id=" + id +
+                    ", name='" + name + '\'' +
+                    '}';
+        }
+    }
+
+    static class To {
+
+        String someName;
+        String someNameSkipped;
+        List<TestCollection> innerList;
+
+        @Override
+        public String toString() {
+            return "To{" +
+                    "someName='" + someName + '\'' +
+                    ", innerList=" + innerList +
+                    '}';
+        }
+    }
+
+    static class From {
+        int someId = 100;
+        String someName = "Abram";
+
+        @Skip
+        String someNameSkipped = "Skipped";
+
+        @TransformTo(field = "id", clazz = TestCollection.class)
+        List<Integer> innerList = Arrays.asList(1,2,3);
     }
 
 }

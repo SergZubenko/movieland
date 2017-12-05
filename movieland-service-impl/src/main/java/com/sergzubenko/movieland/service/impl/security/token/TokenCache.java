@@ -4,6 +4,7 @@ import com.sergzubenko.movieland.service.api.security.AccessToken;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -15,12 +16,16 @@ public class TokenCache {
         tokenCache = new ConcurrentHashMap<>();
     }
 
-    public AccessToken getToken(String tokenId) {
-        return tokenCache.get(tokenId);
+    public Optional<AccessToken> getToken(String tokenId) {
+        return Optional.ofNullable(tokenCache.get(tokenId));
     }
 
     public void registerToken(AccessToken token) {
         tokenCache.put(token.uid(), token);
+    }
+
+    public void removeToken(String uid) {
+        tokenCache.remove(uid);
     }
 
     @Scheduled(fixedDelayString = "${token.cacheCleanupTimeout}")

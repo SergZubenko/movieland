@@ -3,31 +3,30 @@ package com.sergzubenko.movieland.service.impl.security;
 import com.sergzubenko.movieland.entity.User;
 import com.sergzubenko.movieland.entity.UserRole;
 import com.sergzubenko.movieland.service.api.UserService;
-import com.sergzubenko.movieland.service.api.security.ILoginPasswordPrincipal;
+import com.sergzubenko.movieland.service.api.security.UserPrincipal;
 import com.sergzubenko.movieland.service.impl.config.ServiceConfig;
 import com.sergzubenko.movieland.service.impl.security.exception.InvalidUserPasswordException;
-import com.sergzubenko.movieland.service.impl.security.exception.UserNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.matches;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {ServiceConfig.class})
-@DirtiesContext
 public class LoginPasswordAuthManagerTest {
 
     @Mock
@@ -47,31 +46,22 @@ public class LoginPasswordAuthManagerTest {
         roleSet.add(UserRole.USER);
         roleSet.add(UserRole.ADMIN);
 
-        when(userService.getUserByEmail(matches("login"))).thenReturn(user);
+        when(userService.getUserByEmailAndPassword(matches("login"), matches("password"))).thenReturn(user);
+        when(userService.getUserByEmailAndPassword(matches("nologin"),any())).thenThrow(new EmptyResultDataAccessException(1));
         when(userService.getRoles(any())).thenReturn(roleSet);
     }
 
     @Test
     public void auth() throws Exception {
-        ILoginPasswordPrincipal principal = new UserPrincipal("login", "password");
-        manager.auth(principal);
+        UserPrincipal principal = manager.auth("login", "password");
         assertEquals("login", principal.getName());
-        assertEquals("password", principal.getPassword());
-        Set<UserRole> roles = principal.getAuthorities();
+        Set<UserRole> roles = principal.getRoles();
         assertTrue(roles.contains(UserRole.USER));
         assertTrue(roles.contains(UserRole.ADMIN));
-        assertFalse(roles.contains(UserRole.UNAUTHORIZED));
-    }
-
-    @Test(expected = UserNotFoundException.class)
-    public void authNoUser() throws Exception {
-        ILoginPasswordPrincipal principal = new UserPrincipal("nologin", "password");
-        manager.auth(principal);
     }
 
     @Test(expected = InvalidUserPasswordException.class)
-    public void authNoPass() throws Exception {
-        ILoginPasswordPrincipal principal = new UserPrincipal("login", "wrong password");
-        manager.auth(principal);
+    public void authNoUser() throws Exception {
+        manager.auth("nologin", "password");
     }
 }

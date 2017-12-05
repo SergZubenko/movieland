@@ -2,9 +2,7 @@ package com.sergzubenko.movieland.entity;
 
 public enum UserRole {
     ADMIN("ADMIN"),
-    USER("USER"),
-    UNAUTHORIZED("UNAUTHORIZED"),
-    ANONYMOUS("ANONYMOUS"); //ANONYMOUS
+    USER("USER");
 
     private final String value;
 
@@ -12,12 +10,12 @@ public enum UserRole {
         this.value = value;
     }
 
-    public static UserRole getByName(String name){
+    public static UserRole getByName(String name) {
         for (UserRole userRole : values()) {
-            if (userRole.value.equals(name)){
+            if (userRole.value.equals(name)) {
                 return userRole;
             }
         }
-        return UNAUTHORIZED;
+        return null;
     }
 }

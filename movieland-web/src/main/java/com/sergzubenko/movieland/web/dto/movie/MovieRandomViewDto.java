@@ -1,12 +1,11 @@
-package com.sergzubenko.movieland.web.dto;
+package com.sergzubenko.movieland.web.dto.movie;
 
 import com.sergzubenko.movieland.entity.Country;
 import com.sergzubenko.movieland.entity.Genre;
 
 import java.util.List;
 
-public class MovieSingleViewDto
-{
+public class MovieRandomViewDto {
     private Integer id;
     private String nameRussian;
     private String nameNative;
@@ -19,7 +18,6 @@ public class MovieSingleViewDto
 
     private List<Country> countries;
     private List<Genre> genres;
-    private List<ReviewUserViewDto> reviews;
 
     public Integer getId() {
         return id;
@@ -101,17 +99,9 @@ public class MovieSingleViewDto
         this.genres = genres;
     }
 
-    public List<ReviewUserViewDto> getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(List<ReviewUserViewDto> reviews) {
-        this.reviews = reviews;
-    }
-
     @Override
     public String toString() {
-        return "Movie{" +
+        return "MovieRandomViewDto{" +
                 "id=" + id +
                 ", nameRussian='" + nameRussian + '\'' +
                 ", nameNative='" + nameNative + '\'' +
@@ -122,7 +112,6 @@ public class MovieSingleViewDto
                 ", price=" + price +
                 ", countries=" + countries +
                 ", genres=" + genres +
-                ", reviews=" + reviews +
                 '}';
     }
 }

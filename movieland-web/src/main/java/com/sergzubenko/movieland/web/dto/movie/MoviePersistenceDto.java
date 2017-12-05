@@ -1,7 +1,12 @@
-package com.sergzubenko.movieland.web.dto;
+package com.sergzubenko.movieland.web.dto.movie;
 
-public class MovieCompactViewDto {
+import com.sergzubenko.movieland.entity.Country;
+import com.sergzubenko.movieland.entity.Genre;
+import com.sergzubenko.movieland.web.mapper.TransformTo;
 
+import java.util.List;
+
+public class MoviePersistenceDto {
     private Integer id;
     private String nameRussian;
     private String nameNative;
@@ -9,6 +14,12 @@ public class MovieCompactViewDto {
     private String picturePath;
     private Double rating;
     private Double price;
+
+    @TransformTo(field = "id", clazz = Country.class)
+    private List<Integer> countries;
+
+    @TransformTo(field = "id", clazz = Genre.class)
+    private List<Integer> genres;
 
     public Integer getId() {
         return id;
@@ -66,9 +77,25 @@ public class MovieCompactViewDto {
         this.price = price;
     }
 
+    public List<Integer> getCountries() {
+        return countries;
+    }
+
+    public void setCountries(List<Integer> countries) {
+        this.countries = countries;
+    }
+
+    public List<Integer> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(List<Integer> genres) {
+        this.genres = genres;
+    }
+
     @Override
     public String toString() {
-        return "MovieCompactViewDto{" +
+        return "MoviePersistenceDto{" +
                 "id=" + id +
                 ", nameRussian='" + nameRussian + '\'' +
                 ", nameNative='" + nameNative + '\'' +
@@ -76,7 +103,8 @@ public class MovieCompactViewDto {
                 ", picturePath='" + picturePath + '\'' +
                 ", rating=" + rating +
                 ", price=" + price +
+                ", countries=" + countries +
+                ", genres=" + genres +
                 '}';
     }
 }
-
