@@ -10,5 +10,4 @@ public interface AccessToken {
     void invalidate();
 
     UserPrincipal getPrincipal();
-
 }

@@ -29,7 +29,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -61,7 +62,7 @@ public class ReviewControllerTest {
             Review review = (Review) args[0];
             review.setId(100);
             return null;
-        }).when(reviewService).save(any(Review.class));
+        }).when(reviewService).persist(any(Review.class));
 
     }
 
@@ -75,12 +76,10 @@ public class ReviewControllerTest {
         user.setNickname("Some guy");
         user.setPassword("password");
 
-        UserPrincipal principal = new UserPrincipalImpl(user);
-
         Set<UserRole> roles = new HashSet<>();
         roles.add(UserRole.USER);
         roles.add(UserRole.ADMIN);
-        principal.setAuthorities(roles);
+        UserPrincipal principal = new UserPrincipalImpl(user, roles);
 
         mvc.perform(
                 post("/review")

@@ -13,11 +13,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {PersistenceConfig.class})
-public class JdbcUserDaoTest {
+public class JdbcUserDaoITest {
 
     @Autowired
     private UserDao userDao;
@@ -43,13 +44,12 @@ public class JdbcUserDaoTest {
     }
 
     @Test
-    public void getByEmail() throws Exception {
-        User paramUser = userDao.getAll().get(0);
-        User user = userDao.getByEmail(paramUser.getEmail());
-        assertNotNull(user.getPassword());
-        assertEquals(paramUser.getId(), user.getId());
-        assertEquals(paramUser.getNickname(), user.getNickname());
-        assertEquals(paramUser.getEmail(), user.getEmail());
+    public void getByEmailAndPassword() throws Exception {
+        User user = userDao.getByEmailAndPassword("ronald.reynolds66@example.com", "paco");
+        assertNull(user.getPassword());
+        assertNotNull(user.getId());
+        assertNotNull(user.getNickname());
+        assertNotNull(user.getEmail());
     }
 
 }

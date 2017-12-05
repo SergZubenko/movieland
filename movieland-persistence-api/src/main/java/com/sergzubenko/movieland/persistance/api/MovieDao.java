@@ -14,4 +14,6 @@ public interface MovieDao {
     List<Movie> getMovies(Map<String, String> params);
 
     Movie getMovieById(Integer id);
+
+    void persist(Movie movie);
 }

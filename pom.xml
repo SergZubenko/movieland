@@ -86,7 +86,7 @@
                 <artifactId>bcprov-jdk15on</artifactId>
                 <version>1.58</version>
             </dependency>
-            
+
             <!--LOGGING-->
             <dependency>
                 <groupId>ch.qos.logback</groupId>

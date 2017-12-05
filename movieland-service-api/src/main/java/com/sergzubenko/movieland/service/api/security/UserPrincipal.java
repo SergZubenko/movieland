@@ -8,16 +8,8 @@ import java.security.Principal;
 import java.util.Set;
 
 public interface UserPrincipal extends Principal {
-    String getPassword();
-
-    void setUser(User user);
 
     User getUser();
 
-    void setAuthorities(Set<UserRole> authorities);
-
-    Set<UserRole> getAuthorities();
-
-    boolean isAuthorized();
-
+    Set<UserRole> getRoles();
 }

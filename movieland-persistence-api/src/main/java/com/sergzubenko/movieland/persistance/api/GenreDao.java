@@ -11,4 +11,7 @@ public interface GenreDao {
     void enrichMovies(List<Movie> movies);
 
     void enrichMovie(Movie movie);
+
+    void persistGenresForMovie(Movie movie);
+
 }

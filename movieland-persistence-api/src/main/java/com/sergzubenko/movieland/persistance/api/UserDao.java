@@ -9,7 +9,7 @@ import java.util.Set;
 public interface UserDao {
     List<User> getAll();
 
-    User getByEmail(String email);
+    User getByEmailAndPassword(String email, String password);
 
     Set<UserRole> getRoles(User user);
 

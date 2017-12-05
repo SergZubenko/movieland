@@ -17,20 +17,15 @@ public class TokenCache {
     }
 
     public Optional<AccessToken> getToken(String tokenId) {
-        AccessToken token = tokenCache.get(tokenId);
-
-        if (token != null  && !token.isExpired()){
-            return  Optional.of(token);
-        }
-        return Optional.empty();
+        return Optional.ofNullable(tokenCache.get(tokenId));
     }
 
     public void registerToken(AccessToken token) {
         tokenCache.put(token.uid(), token);
     }
 
-    public void removeToken(AccessToken token){
-        tokenCache.remove(token.uid());
+    public void removeToken(String uid) {
+        tokenCache.remove(uid);
     }
 
     @Scheduled(fixedDelayString = "${token.cacheCleanupTimeout}")

@@ -10,8 +10,6 @@ public class UUIDBasedToken implements AccessToken {
 
     private final String uid;
 
-    private final LocalDateTime logonTime;
-
     private volatile LocalDateTime expirationTime;
 
     private final UserPrincipal principal;
@@ -20,7 +18,6 @@ public class UUIDBasedToken implements AccessToken {
     public UUIDBasedToken(UserPrincipal principal, LocalDateTime expirationTime) {
         uid = UUID.randomUUID().toString();
         this.principal = principal;
-        this.logonTime = LocalDateTime.now();
         this.expirationTime = expirationTime;
     }
 

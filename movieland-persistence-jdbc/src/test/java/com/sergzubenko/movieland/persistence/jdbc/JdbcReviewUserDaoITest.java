@@ -25,7 +25,7 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {PersistenceConfig.class})
 @DirtiesContext
-public class JdbcReviewUserDaoTest {
+public class JdbcReviewUserDaoITest {
     private final Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
 
     @Autowired
@@ -44,7 +44,6 @@ public class JdbcReviewUserDaoTest {
     private void checkReview(Review review) {
         assertNotNull(review.getId());
         assertNotNull(review.getUser());
-        assertNotNull(review.getText());
         checkUser(review.getUser());
     }
 

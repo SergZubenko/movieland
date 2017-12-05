@@ -15,7 +15,7 @@ import java.util.Set;
 
 @Repository
 public class JdbcUserDao implements UserDao {
-    private final UserMapper userMapper = new UserMapper();
+    private static final UserMapper USER_MAPPER = new UserMapper();
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -25,29 +25,30 @@ public class JdbcUserDao implements UserDao {
 
 
     @Value("${sql.user.getByEmail}")
-    String getByEmailSql;
+    String getByEmailAndPasswordSql;
 
     @Value("${sql.user.getUserRoles}")
     String getUserRolesSql;
 
     @Override
     public List<User> getAll() {
-        return jdbcTemplate.query(getAllUsersSql, userMapper);
+        return jdbcTemplate.query(getAllUsersSql, USER_MAPPER);
     }
 
     @Override
-    public User getByEmail(String email) {
-        return jdbcTemplate.queryForObject(getByEmailSql, new Object[]{email}, userMapper);
+    public User getByEmailAndPassword(String email, String password) {
+        return jdbcTemplate.queryForObject(getByEmailAndPasswordSql, USER_MAPPER, email, password);
     }
 
     @Override
     public Set<UserRole> getRoles(User user) {
-
         HashSet<UserRole> roles = new HashSet<>();
-        jdbcTemplate.query(getUserRolesSql,new Object[]{user.getId()},
+        jdbcTemplate.query(getUserRolesSql,
                 rs -> {
-            roles.add(UserRole.getByName(rs.getString("ROLE")));
-        });
+                    UserRole role = UserRole.getByName(rs.getString("ROLE"));
+                    roles.add(role);
+                },
+                user.getId());
         return roles;
     }
 
