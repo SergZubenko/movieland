@@ -7,7 +7,6 @@ import com.sergzubenko.movieland.service.api.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -28,12 +27,12 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     public void enrichMovie(Movie movie) {
-        countryDao.enrichMovies(Collections.singletonList(movie));
+        countryDao.enrichMovie(movie);
     }
 
     @Override
     public void persistMovieCountries(Movie movie) {
-        countryDao.persistMovieCountries(movie);
+        countryDao.persistCountriesForMovie(movie);
     }
 
 }

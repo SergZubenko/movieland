@@ -4,21 +4,23 @@ import com.sergzubenko.movieland.service.api.security.AccessToken;
 import com.sergzubenko.movieland.service.api.security.AuthManager;
 import com.sergzubenko.movieland.service.api.security.LoginService;
 import com.sergzubenko.movieland.service.api.security.UserPrincipal;
-import com.sergzubenko.movieland.service.impl.security.exception.TokenNotFoundException;
-import com.sergzubenko.movieland.service.impl.security.token.AbstractTokenFactory;
 import com.sergzubenko.movieland.service.impl.security.token.TokenCache;
+import com.sergzubenko.movieland.service.impl.security.token.UUIDBasedToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class LoginServiceImpl implements LoginService {
+    private static final Logger log = LoggerFactory.getLogger(LoginServiceImpl.class);
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-
-    @Autowired
-    private AbstractTokenFactory tokenFactory;
+    @Value("${token.expirationTimeSeconds}")
+    Integer tokenLifeTime;
 
     @Autowired
     private AuthManager authManager;
@@ -27,28 +29,26 @@ public class LoginServiceImpl implements LoginService {
     private TokenCache tokenCache;
 
     @Override
-    public AccessToken login(String username, String password) {
-        logger.info("User " + username + " is logging in");
+    public UserPrincipal login(String username, String password) {
+        log.info("User " + username + " is logging in");
+        return authManager.auth(username, password);
+    }
 
-        UserPrincipal principal = authManager.auth(username, password);
-        AccessToken accessToken = tokenFactory.generateToken(principal);
+    @Override
+    public AccessToken generateNewToken(UserPrincipal principal) {
+        AccessToken accessToken = new UUIDBasedToken(principal, LocalDateTime.now().plusSeconds(tokenLifeTime));
         tokenCache.registerToken(accessToken);
         return accessToken;
     }
 
     @Override
     public void logout(String tokenId) {
-
-        AccessToken token = getValidToken(tokenId);
-        tokenCache.removeToken(token);
-        token.invalidate();
+        tokenCache.removeToken(tokenId);
     }
 
     @Override
-    public AccessToken getValidToken(String tokenId) {
-        return tokenCache.getToken(tokenId)
-                .filter((token) -> !token.isExpired())
-                .orElseThrow(() -> new TokenNotFoundException("Token " + tokenId + " invalid"));
+    public Optional<AccessToken> getActiveTokenByUUID(String tokenId) {
+        return tokenCache.getToken(tokenId).filter((token) -> !token.isExpired());
     }
 }
 

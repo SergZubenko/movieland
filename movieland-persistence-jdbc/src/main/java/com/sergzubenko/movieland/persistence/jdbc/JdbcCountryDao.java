@@ -12,23 +12,21 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-
-import static com.sergzubenko.movieland.persistence.jdbc.util.MovieListUtils.findInListById;
-import static com.sergzubenko.movieland.persistence.jdbc.util.MovieListUtils.getIds;
 
 @Repository
 public class JdbcCountryDao implements CountryDao {
-    private static final CountryMapper countryMapper = new CountryMapper();
+    private static final CountryMapper COUNTRY_MAPPER = new CountryMapper();
 
-    private final Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
+    private final Logger log = LoggerFactory.getLogger(getClass().getSimpleName());
 
 
     @Autowired
@@ -54,74 +52,90 @@ public class JdbcCountryDao implements CountryDao {
 
     @Override
     public List<Country> getAll() {
-        return jdbcTemplate.query(getAllCountiesSql, countryMapper);
+        return jdbcTemplate.query(getAllCountiesSql, COUNTRY_MAPPER);
     }
 
     @Override
     public void enrichMovies(List<Movie> movies) {
-        namedParameterJdbcTemplate.query(getMoviesCountriesSql, getIds(movies), rs -> {
-            Movie movie = findInListById(rs.getInt("movie_id"), movies);
-            List<Country> subCollection = movie.getCountries();
-            if (subCollection == null) {
-                subCollection = new ArrayList<>();
-                movie.setCountries(subCollection);
-            }
-            subCollection.add(countryMapper.mapRow(rs, 0));
+        if (movies.size() == 1) {
+            enrichMovie(movies.get(0));
+            return;
+        }
+        Map<Integer, Movie> idMovieMap = movies.stream().collect(Collectors.toMap(Movie::getId, m -> m));
+        SqlParameterSource parameters = new MapSqlParameterSource("ids", idMovieMap.keySet());
+        namedParameterJdbcTemplate.query(getMoviesCountriesSql, parameters, rs -> {
+            Movie movie = idMovieMap.get(rs.getInt("movie_id"));
+            addCountryToMovie(movie, COUNTRY_MAPPER.mapRow(rs, 0));
         });
     }
 
     @Override
     public void enrichMovie(Movie movie) {
-        enrichMovies(Collections.singletonList(movie));
+        SqlParameterSource parameters = new MapSqlParameterSource().addValue("ids", movie.getId());
+        namedParameterJdbcTemplate.query(getMoviesCountriesSql, parameters, rs -> {
+            Country country = COUNTRY_MAPPER.mapRow(rs, 0);
+            addCountryToMovie(movie, country);
+        });
     }
 
     @Override
-    public void persistMovieCountries(Movie movie) {
-        logger.debug("Start inserting countries into movies_countries for movie {}", movie);
+    public void persistCountriesForMovie(Movie movie) {
+        log.debug("Start inserting countries into movies_countries for movie {}", movie);
         long startTime = System.currentTimeMillis();
 
-        List<Integer> ids = extractIds(movie);
-        deleteMovieCountries(movie, ids);
+        List<Country> countriesToSave = movie.getCountries();
+        Integer movieId = movie.getId();
 
-        jdbcTemplate.batchUpdate(movieAddCountriesSql, new BatchPreparedStatementSetter() {
+        if (countriesToSave == null || countriesToSave.isEmpty()) {
+            deleteMovieCountryLinks(movieId);
+        } else {
+            List<Integer> countriesIdsToSave = countriesToSave.stream().map(Country::getId).collect(Collectors.toList());
+            deleteMovieCountryLinks(movieId, countriesIdsToSave);
+            saveMovieCountryLinks(movieId, countriesIdsToSave);
+        }
+
+        log.debug("Finish insert countries. It took : {}ms ", System.currentTimeMillis() - startTime);
+    }
+
+    private void saveMovieCountryLinks(Integer movieId, List<Integer> countriesIds) {
+        BatchPreparedStatementSetter statementSetter = new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
-                ps.setInt(1, movie.getId());
-                ps.setInt(2, ids.get(i));
+                ps.setInt(1, movieId);
+                ps.setInt(2, countriesIds.get(i));
             }
 
             @Override
             public int getBatchSize() {
-                return ids.size();
+                return countriesIds.size();
             }
-        });
+        };
 
-        logger.info("Finish insert countries. It took : {}ms ", System.currentTimeMillis() - startTime);
+        jdbcTemplate.batchUpdate(movieAddCountriesSql, statementSetter);
     }
 
-
-    void deleteMovieCountries(Movie movie, List<Integer> excludeIds) {
-        logger.debug("start deleting countries from  movie {} except ids {}", movie, excludeIds);
-        long startTime = System.currentTimeMillis();
-
-        if (excludeIds.size() == 0) {
-            jdbcTemplate.update(movieClearCountriesSql, movie.getId());
-        } else {
-            MapSqlParameterSource parameters = new MapSqlParameterSource()
-                    .addValue("movieId", movie.getId())
-                    .addValue("ids", excludeIds);
-            namedParameterJdbcTemplate.update(movieClearCountriesSqlEx, parameters);
+    void deleteMovieCountryLinks(Integer movieId, List<Integer> excludeCountryIds) {
+        if (excludeCountryIds.size() == 0){
+            deleteMovieCountryLinks(movieId);
+            return;
         }
-        logger.info("Finish delete countries. It took : {}ms ", System.currentTimeMillis() - startTime);
+        MapSqlParameterSource parameters = new MapSqlParameterSource()
+                .addValue("movieId", movieId)
+                .addValue("ids", excludeCountryIds);
+        namedParameterJdbcTemplate.update(movieClearCountriesSqlEx, parameters);
     }
 
-    private List<Integer> extractIds(Movie movie) {
-        List<Integer> ids;
-        if (movie.getCountries() == null) {
-            ids = new ArrayList<>(1);
-        } else {
-            ids = movie.getCountries().stream().map(Country::getId).collect(Collectors.toList());
-        }
-        return ids;
+    void deleteMovieCountryLinks(Integer movieId) {
+        jdbcTemplate.update(movieClearCountriesSql, movieId);
     }
+
+    private void addCountryToMovie(Movie movie, Country country) {
+        List<Country> countries = movie.getCountries();
+        if (countries == null) {
+            countries = new ArrayList<>();
+            movie.setCountries(countries);
+        }
+        countries.add(country);
+    }
+
 }

@@ -12,6 +12,6 @@ public interface CountryDao {
 
     void enrichMovie(Movie movie);
 
-    void persistMovieCountries(Movie movie);
+    void persistCountriesForMovie(Movie movie);
 
 }

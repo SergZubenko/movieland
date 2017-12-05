@@ -1,4 +1,4 @@
-package com.sergzubenko.movieland.service.impl.security.dto;
+package com.sergzubenko.movieland.web.dto.login;
 
 public class LoginResponseDto {
     private String uuid;

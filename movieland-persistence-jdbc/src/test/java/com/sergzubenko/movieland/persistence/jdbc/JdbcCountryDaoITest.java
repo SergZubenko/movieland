@@ -37,7 +37,7 @@ public class JdbcCountryDaoITest {
     @Test
     @Transactional
     public void clearCountries() {
-        logger.info("Start test for clearcountries()");
+        logger.info("Start test for clearCountries()");
 
         Movie movie = new Movie();
         movie.setId(1);
@@ -47,7 +47,7 @@ public class JdbcCountryDaoITest {
         List<Integer> ids = movie.getCountries().stream().map(Country::getId).collect(Collectors.toList());
         logger.info("Initial size of countries is {}", ids.size());
         ids.remove(0);
-        jdbcCountryDao.deleteMovieCountries(movie, ids);
+        jdbcCountryDao.deleteMovieCountryLinks(movie.getId(), ids);
         movie.setCountries(null);
         jdbcCountryDao.enrichMovie(movie);
         logger.info("Current size of countries are {}", ids.size());
@@ -56,6 +56,23 @@ public class JdbcCountryDaoITest {
         } else {
             assertEquals(ids.size(), movie.getCountries().size());
         }
+    }
+
+    @Test
+    @Transactional
+    public void clearAllCountries() {
+        logger.info("Start test for clearCountries()");
+
+        Movie movie = new Movie();
+        movie.setId(1);
+        jdbcCountryDao.enrichMovie(movie);
+        logger.info("Found movie {}", movie);
+
+        jdbcCountryDao.deleteMovieCountryLinks(movie.getId());
+        movie.setCountries(null);
+        jdbcCountryDao.enrichMovie(movie);
+        logger.info("Expected size of countries are 0");
+        assertNull(movie.getCountries());
     }
 
     @Test
@@ -73,7 +90,7 @@ public class JdbcCountryDaoITest {
         Country country = new Country(3, "");
         movie.getCountries().add(country);
 
-        jdbcCountryDao.persistMovieCountries(movie);
+        jdbcCountryDao.persistCountriesForMovie(movie);
         movie.setCountries(null);
         jdbcCountryDao.enrichMovie(movie);
 

@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class ReviewUserMapper implements RowMapper<Review> {
+public class UserReviewMapper implements RowMapper<Review> {
 
     @Override
     public Review mapRow(ResultSet rs, int rowNum) throws SQLException {

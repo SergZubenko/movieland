@@ -1,7 +1,8 @@
 package com.sergzubenko.movieland.service.impl;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sergzubenko.movieland.service.api.CurrencyService;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -23,9 +24,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class NBUCurrencyService implements CurrencyService {
-
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final ObjectMapper objectMapper = new ObjectMapper();
     private List<String> currencies;
 
     volatile private Map<String, Double> ratesCache = new HashMap<>();
@@ -59,26 +59,30 @@ public class NBUCurrencyService implements CurrencyService {
     @Scheduled(fixedDelayString = "${currency.updateInterval}", initialDelay = 0)
     private void updateRates() {
         try {
-            logger.info("Updating  NBU rates");
+            log.info("Updating  NBU rates");
             loadFromServer();
         } catch (IOException e) {
-            logger.warn("Update rates failed. ", e);
+            log.warn("Update rates failed. ", e);
         }
     }
 
     private void loadFromServer() throws IOException {
 
-        List<CurrencyFormat> loadedCurrencies = objectMapper.readValue(new URL(url), new TypeReference<List<CurrencyFormat>>() {
-        });
+        List<CurrencyJSONFormat> loadedCurrencies = objectMapper.readValue(new URL(url),
+                new TypeReference<List<CurrencyJSONFormat>>() {
+                });
 
         ratesCache = loadedCurrencies.stream()
-                .filter(c -> currencies.contains(c.cc))
-                .collect(Collectors.toMap(c -> c.cc.toUpperCase(), r -> r.rate));
+                .filter(rate -> currencies.contains(rate.currency))
+                .collect(Collectors.toMap(rate -> rate.currency.toUpperCase(), rate -> rate.rate));
     }
 
-    private static class CurrencyFormat {
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    private static class CurrencyJSONFormat {
         private double rate;
-        private String cc;
+
+        @JsonProperty("cc")
+        private String currency;
     }
 }
 

@@ -51,7 +51,7 @@ public class JdbcGenreDaoITest {
         List<Integer> ids = movie.getGenres().stream().map(Genre::getId).collect(Collectors.toList());
         logger.info("Initial size of genres is {}", ids.size());
         ids.remove(0);
-        jdbcGenreDao.deleteMovieGenres(movie, ids);
+        jdbcGenreDao.deleteMovieGenreLinks(movie.getId(), ids);
         movie.setGenres(null);
         jdbcGenreDao.enrichMovie(movie);
         logger.info("Current size of genres are {}", ids.size());
@@ -60,6 +60,23 @@ public class JdbcGenreDaoITest {
         } else {
             assertEquals(ids.size(), movie.getGenres().size());
         }
+    }
+
+    @Test
+    @Transactional
+    public void clearAllGenres() {
+        logger.info("Start test for clearGenres()");
+
+        Movie movie = new Movie();
+        movie.setId(1);
+        jdbcGenreDao.enrichMovie(movie);
+        logger.info("Found movie {}", movie);
+
+        jdbcGenreDao.deleteMovieGenreLinks(movie.getId());
+        movie.setGenres(null);
+        jdbcGenreDao.enrichMovie(movie);
+        logger.info("Expected size of genres are 0");
+        assertNull(movie.getGenres());
     }
 
     @Test
@@ -79,7 +96,7 @@ public class JdbcGenreDaoITest {
         Genre genre = new Genre(3, "");
         movie.getGenres().add(genre);
 
-        jdbcGenreDao.persistMovieGenres(movie);
+        jdbcGenreDao.persistGenresForMovie(movie);
         movie.setGenres(null);
         jdbcGenreDao.enrichMovie(movie);
         logger.info("Current size of genres are {}", movie.getGenres().size());

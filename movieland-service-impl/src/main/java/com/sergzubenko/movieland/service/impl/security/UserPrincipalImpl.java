@@ -8,22 +8,22 @@ import java.util.Set;
 
 public class UserPrincipalImpl implements UserPrincipal {
 
-    private User user;
+    private final User user;
 
-    private Set<UserRole> authorities;
+    private final Set<UserRole> roles;
 
-    public UserPrincipalImpl(User user) {
+    public UserPrincipalImpl(User user, Set<UserRole> roles) {
         this.user = user;
+        this.roles = roles;
+    }
+
+    public Set<UserRole> getRoles() {
+        return roles;
     }
 
     @Override
     public String getName() {
         return user.getEmail();
-    }
-
-    @Override
-    public void setUser(User user) {
-        this.user = user;
     }
 
     @Override
@@ -41,17 +41,5 @@ public class UserPrincipalImpl implements UserPrincipal {
         return user.getEmail().equals(that.user.getEmail());
     }
 
-    public Set<UserRole> getAuthorities() {
-        return authorities;
-    }
-
-    @Override
-    public boolean isAuthorized() {
-        return user != null;
-    }
-
-    public void setAuthorities(Set<UserRole> authorities) {
-        this.authorities = authorities;
-    }
 
 }

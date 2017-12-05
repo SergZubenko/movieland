@@ -8,10 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service
+@Transactional
 public class ReviewServiceImpl implements ReviewService {
 
     @Autowired
@@ -24,12 +24,11 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void enrichMovie(Movie movie) {
-        reviewUserDao.enrichMovies(Collections.singletonList(movie));
+        reviewUserDao.enrichMovie(movie);
     }
 
     @Override
-    @Transactional
-    public void save(Review review) {
+    public void persist(Review review) {
         reviewUserDao.save(review);
     }
 }

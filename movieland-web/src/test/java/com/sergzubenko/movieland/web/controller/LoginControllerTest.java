@@ -1,6 +1,7 @@
 package com.sergzubenko.movieland.web.controller;
 
 import com.sergzubenko.movieland.entity.User;
+import com.sergzubenko.movieland.entity.UserRole;
 import com.sergzubenko.movieland.service.api.security.AccessToken;
 import com.sergzubenko.movieland.service.api.security.LoginService;
 import com.sergzubenko.movieland.service.impl.config.ServiceConfig;
@@ -24,7 +25,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.matches;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -37,7 +41,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 public class LoginControllerTest {
     private MockMvc mvc;
-
 
     @Mock
     private LoginService loginService;
@@ -56,12 +59,14 @@ public class LoginControllerTest {
         user.setNickname("Some guy");
         user.setPassword("password");
 
-        UserPrincipalImpl principal = new UserPrincipalImpl(user);
+        Set<UserRole> roles = new HashSet<>();
+
+        UserPrincipalImpl principal = new UserPrincipalImpl(user, roles);
 
         AccessToken token = new UUIDBasedToken(principal, LocalDateTime.now());
-        when(loginService.login(matches("someguy"), matches("password"))).thenReturn(token);
+        when(loginService.login(matches("someguy"), matches("password"))).thenReturn(principal);
+        when(loginService.generateNewToken(any())).thenReturn(token);
     }
-
 
     @Test
     public void login() throws Exception {
@@ -78,8 +83,6 @@ public class LoginControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("nickname").value("Some guy"));
     }
-
-
 
     @Configuration
     static class config {

@@ -20,7 +20,7 @@ import static com.sergzubenko.movieland.persistence.jdbc.util.OrderByAppender.pr
 @Repository
 public class JdbcMovieDao implements MovieDao {
 
-    private static final MovieMapper movieMapper = new MovieMapper();
+    private static final MovieMapper MOVIE_MAPPER = new MovieMapper();
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -49,24 +49,24 @@ public class JdbcMovieDao implements MovieDao {
 
     @Override
     public List<Movie> getRandomMovies() {
-        return jdbcTemplate.query(getRandomThreeMoviesSql, movieMapper);
+        return jdbcTemplate.query(getRandomThreeMoviesSql, MOVIE_MAPPER);
     }
 
     @Override
     public List<Movie> getMovies(Map<String, String> params) {
         String sql = prepareOrderedQuery(getMoviesSql, orderBySql, Movie.class, params);
-        return jdbcTemplate.query(sql, movieMapper);
+        return jdbcTemplate.query(sql, MOVIE_MAPPER);
     }
 
     @Override
     public Movie getMovieById(Integer id) {
-        return jdbcTemplate.queryForObject(movieByIdSql, new Object[]{id}, movieMapper);
+        return jdbcTemplate.queryForObject(movieByIdSql, MOVIE_MAPPER, id);
     }
 
     @Override
     public List<Movie> getMoviesByGenre(Integer genreId, Map<String, String> params) {
         String sql = prepareOrderedQuery(getMoviesByGenreSql, orderBySql, Movie.class, params);
-        return jdbcTemplate.query(sql, new Object[]{genreId}, movieMapper);
+        return jdbcTemplate.query(sql, new Object[]{genreId}, MOVIE_MAPPER);
     }
 
     @Override

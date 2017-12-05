@@ -11,5 +11,5 @@ public interface ReviewService {
 
     void enrichMovie(Movie movie);
 
-    void save(Review review);
+    void persist(Review review);
 }

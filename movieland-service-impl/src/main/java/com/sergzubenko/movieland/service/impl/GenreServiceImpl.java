@@ -7,7 +7,6 @@ import com.sergzubenko.movieland.service.api.GenreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -28,12 +27,12 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public void enrichMovie(Movie movie) {
-        genreDao.enrichMovies(Collections.singletonList(movie));
+        genreDao.enrichMovie(movie);
     }
 
     @Override
     public void persistMovieGenres(Movie movie) {
-        genreDao.persistMovieGenres(movie);
+        genreDao.persistGenresForMovie(movie);
     }
 
 }

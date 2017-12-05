@@ -39,7 +39,7 @@ public class EntityDtoReflectionMapperTest {
         movie.setGenres(genres);
 
 
-        MovieCompactViewDto dto1 = EntityDtoReflectionMapper.map(movie, MovieCompactViewDto.class);
+        MovieCompactViewDto dto1 = ObjectTransformer.transform(movie, MovieCompactViewDto.class);
 
         assertEquals(movie.getId(), dto1.getId());
         assertEquals(movie.getYearOfRelease(), dto1.getYearOfRelease());
@@ -47,7 +47,7 @@ public class EntityDtoReflectionMapperTest {
         assertEquals(movie.getNameNative(), dto1.getNameNative());
         assertEquals(movie.getNameRussian(), dto1.getNameRussian());
 
-        MovieRandomViewDto dto2 = EntityDtoReflectionMapper.map(movie, MovieRandomViewDto.class);
+        MovieRandomViewDto dto2 = ObjectTransformer.transform(movie, MovieRandomViewDto.class);
         assertEquals(movie.getId(), dto2.getId());
         assertEquals(movie.getYearOfRelease(), dto2.getYearOfRelease());
         assertEquals(movie.getPrice(), dto2.getPrice());
@@ -67,7 +67,7 @@ public class EntityDtoReflectionMapperTest {
         }
 
 
-        MovieSingleViewDto dto3 = EntityDtoReflectionMapper.map(movie, MovieSingleViewDto.class);
+        MovieSingleViewDto dto3 = ObjectTransformer.transform(movie, MovieSingleViewDto.class);
         assertEquals(movie.getId(), dto3.getId());
         assertEquals(movie.getYearOfRelease(), dto3.getYearOfRelease());
         assertEquals(movie.getPrice(), dto3.getPrice());
@@ -100,7 +100,7 @@ public class EntityDtoReflectionMapperTest {
 
         From from = new From();
 
-        To to = EntityDtoReflectionMapper.map(from, To.class);
+        To to = ObjectTransformer.transform(from, To.class);
 
         assertEquals(to.someName, from.someName);
         assertNull(to.someNameSkipped);
