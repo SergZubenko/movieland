@@ -53,6 +53,11 @@
             <artifactId>jcl-over-slf4j</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+        </dependency>
+
         <!--TEST-->
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>

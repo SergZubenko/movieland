@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <appender name="log_file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>/logs/movieland.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>logs/movieland-%d{yyyy-MM-dd}.log.%i</fileNamePattern>
@@ -12,15 +12,37 @@
         </encoder>
     </appender>
 
-    <appender name="log_console" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %X{requestId} %X{nickname} %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
+    <appender name="SMTP" class="ch.qos.logback.classic.net.SMTPAppender">
+        <smtpHost>smtp.ukr.net</smtpHost>
+        <smtpPort>2525</smtpPort>
+        <STARTTLS>true</STARTTLS>
+        <username>error_alerts@ukr.net</username>
+        <password>tests111</password>
+
+        <asynchronousSending>false</asynchronousSending>
+
+        <to>sergzubenko@gmail.com</to>
+        <from>error_alerts@ukr.net</from>
+        <subject>TESTING: %logger{20} - %m</subject>
+
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %X{requestId} %X{nickname} %-5level %logger{36} - %msg%n</pattern>
+        </layout>
+    </appender>
+
     <root level="DEBUG">
-        <appender-ref ref="log_file"/>
-        <appender-ref ref="log_console"/>
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="SMTP"/>
     </root>
 
 </configuration>
