@@ -3,6 +3,9 @@ package com.sergzubenko.movieland.web.config;
 import com.sergzubenko.movieland.service.impl.config.ServiceConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+
 public class WebServletInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
     @Override
     protected Class<?>[] getRootConfigClasses() {
@@ -17,5 +20,11 @@ public class WebServletInitializer extends AbstractAnnotationConfigDispatcherSer
     @Override
     protected String[] getServletMappings() {
         return new String[]{"/v1/*"};
+    }
+
+    @Override
+    public void onStartup(ServletContext servletContext) throws ServletException {
+        super.onStartup(servletContext);
+        servletContext.setInitParameter("spring.profiles.active", "LRUCachingType");
     }
 }

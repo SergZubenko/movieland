@@ -2,7 +2,10 @@ package com.sergzubenko.movieland.persistence.jdbc.config;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -14,7 +17,7 @@ import javax.sql.DataSource;
 @Configuration
 @ComponentScan(basePackages = "com.sergzubenko.movieland.persistence.jdbc")
 @PropertySource({"classpath:jdbc.properties",
-        "classpath:scheduler.properties",
+        "classpath:cache.properties",
         "classpath:mysql.sql.template.properties"})
 @EnableScheduling
 public class PersistenceConfig {

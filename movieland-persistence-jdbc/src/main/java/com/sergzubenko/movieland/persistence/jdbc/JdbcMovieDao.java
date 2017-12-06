@@ -53,7 +53,7 @@ public class JdbcMovieDao implements MovieDao {
     }
 
     @Override
-    public List<Movie> getMovies(Map<String, String> params) {
+    public List<Movie> getAll(Map<String, String> params) {
         String sql = prepareOrderedQuery(getMoviesSql, orderBySql, Movie.class, params);
         return jdbcTemplate.query(sql, MOVIE_MAPPER);
     }
