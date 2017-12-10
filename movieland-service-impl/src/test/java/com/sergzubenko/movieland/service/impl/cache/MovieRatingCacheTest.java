@@ -65,7 +65,6 @@ public class MovieRatingCacheTest {
         assertEquals(9.5, movie.getRating(), 0.0d);
     }
 
-
     @Bean
     @Primary
     public MovieRatingDao ratingDao() {

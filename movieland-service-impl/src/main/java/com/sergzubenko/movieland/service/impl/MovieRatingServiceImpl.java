@@ -30,5 +30,4 @@ public class MovieRatingServiceImpl implements MovieRatingService {
     public void rateMovie(Integer userId, Integer movieId, double rating) {
         ratingCache.rateMovie(userId, movieId, rating);
     }
-
 }

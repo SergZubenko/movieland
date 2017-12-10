@@ -84,6 +84,4 @@ public class MovieServiceImpl implements MovieService {
         countryService.enrichMovie(movie);
         genreService.enrichMovie(movie);
     }
-
-
 }

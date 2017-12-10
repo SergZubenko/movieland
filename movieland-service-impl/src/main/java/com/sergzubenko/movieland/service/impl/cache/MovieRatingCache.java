@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 public class MovieRatingCache {
     private static final Logger log = LoggerFactory.getLogger(MovieRatingCache.class);
 
-
     @Autowired
     private MovieRatingDao movieRatingDao;
 
