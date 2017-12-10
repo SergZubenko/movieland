@@ -3,6 +3,7 @@ package com.sergzubenko.movieland.web.controller;
 
 import com.sergzubenko.movieland.entity.Movie;
 import com.sergzubenko.movieland.entity.UserRole;
+import com.sergzubenko.movieland.service.api.MovieRatingService;
 import com.sergzubenko.movieland.service.api.MovieService;
 import com.sergzubenko.movieland.service.api.security.UserPrincipal;
 import com.sergzubenko.movieland.web.dto.movie.MovieCompactViewDto;
@@ -33,6 +34,10 @@ public class MovieController {
 
     @Autowired
     private MovieService movieService;
+
+
+    @Autowired
+    private MovieRatingService ratingService;
 
     @RequestMapping(method = RequestMethod.GET)
     public List<MovieCompactViewDto> getAllMovies(
@@ -78,6 +83,13 @@ public class MovieController {
         return persistMovie(movieDto);
     }
 
+    @RequestMapping(path = "/{movieId}/rate", method = POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @HasRole(UserRole.USER)
+    public void rateMovie(@PathVariable Integer movieId, @RequestBody double rating, UserPrincipal principal){
+        ratingService.rateMovie(principal.getUser().getId(), movieId, rating);
+    }
+
+
     @RequestMapping(path = "/{movieId}", method = PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @HasRole(UserRole.ADMIN)
     public void updateMovie(@PathVariable Integer movieId, @RequestBody MoviePersistenceDto movieDto, UserPrincipal principal) {
@@ -97,6 +109,5 @@ public class MovieController {
         log.info("Movie {} was stored. It took {} ms", movie, System.currentTimeMillis() - startTime);
         return movie;
     }
-
 
 }

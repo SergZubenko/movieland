@@ -16,4 +16,5 @@ public interface MovieDao {
     Movie getMovieById(Integer id);
 
     void persist(Movie movie);
+
 }

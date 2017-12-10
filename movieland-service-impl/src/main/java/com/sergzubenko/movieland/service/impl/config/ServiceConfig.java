@@ -12,7 +12,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @Configuration
 @Import(PersistenceConfig.class)
 @EnableScheduling
-@PropertySource({"classpath:currency.properties", "classpath:security.properties"})
+@PropertySource({"classpath:currency.properties",
+        "classpath:security.properties",
+        "classpath:cache.properties"})
 @ComponentScan(basePackages = "com.sergzubenko.movieland.service.impl")
 public class ServiceConfig {
 }

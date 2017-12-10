@@ -1,10 +1,9 @@
-package com.sergzubenko.movieland.service.impl;
+package com.sergzubenko.movieland.service.impl.cache;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sergzubenko.movieland.service.api.CurrencyService;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +22,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class NBUCurrencyService implements CurrencyService {
+public class NBUCurrencyCache {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final ObjectMapper objectMapper = new ObjectMapper();
     private List<String> currencies;
@@ -39,7 +38,6 @@ public class NBUCurrencyService implements CurrencyService {
     @Value("${currency.baseCurrency}")
     private String baseCurrency;
 
-    @Override
     public double getRate(String currency) {
         if (baseCurrency.equalsIgnoreCase(currency)) {
             return 1;
@@ -77,6 +75,8 @@ public class NBUCurrencyService implements CurrencyService {
                 .collect(Collectors.toMap(rate -> rate.currency.toUpperCase(), rate -> rate.rate));
     }
 
+
+    //RECEIVED RATE JSON FORMAT
     @JsonIgnoreProperties(ignoreUnknown = true)
     private static class CurrencyJSONFormat {
         private double rate;

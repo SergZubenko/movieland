@@ -1,8 +1,10 @@
 package com.sergzubenko.movieland.service.api;
 
+import com.sergzubenko.movieland.entity.Movie;
+
 public interface CurrencyService {
 
-    double getRate(String currency);
+    void setMoviePrice(Movie movie, String currency);
 
 }
 

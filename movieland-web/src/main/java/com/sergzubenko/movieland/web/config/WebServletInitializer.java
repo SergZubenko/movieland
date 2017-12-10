@@ -25,6 +25,6 @@ public class WebServletInitializer extends AbstractAnnotationConfigDispatcherSer
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
         super.onStartup(servletContext);
-        servletContext.setInitParameter("spring.profiles.active", "LRUCachingType");
+        servletContext.setInitParameter("spring.profiles.active", "softRefCache");
     }
 }

@@ -17,7 +17,6 @@ import javax.sql.DataSource;
 @Configuration
 @ComponentScan(basePackages = "com.sergzubenko.movieland.persistence.jdbc")
 @PropertySource({"classpath:jdbc.properties",
-        "classpath:cache.properties",
         "classpath:mysql.sql.template.properties"})
 @EnableScheduling
 public class PersistenceConfig {

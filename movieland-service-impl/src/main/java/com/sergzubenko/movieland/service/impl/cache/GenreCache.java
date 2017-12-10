@@ -1,9 +1,7 @@
-package com.sergzubenko.movieland.persistence.jdbc;
+package com.sergzubenko.movieland.service.impl.cache;
 
 import com.sergzubenko.movieland.entity.Genre;
-import com.sergzubenko.movieland.entity.Movie;
 import com.sergzubenko.movieland.persistance.api.GenreDao;
-import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -13,30 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Primary
-public class CachedGenreDao implements GenreDao {
-
+public class GenreCache{
     private volatile List<Genre> cache;
 
     @Resource(name = "jdbcGenreDao")
     private GenreDao genreDao;
 
-    @Override
-    public void enrichMovies(List<Movie> movies) {
-        genreDao.enrichMovies(movies);
-    }
-
-    @Override
-    public void enrichMovie(Movie movie) {
-        genreDao.enrichMovie(movie);
-    }
-
-    @Override
-    public void persistGenresForMovie(Movie movie) {
-        genreDao.persistGenresForMovie(movie);
-    }
-
-    @Override
     public List<Genre> getAll() {
         return new ArrayList<>(cache);
     }
