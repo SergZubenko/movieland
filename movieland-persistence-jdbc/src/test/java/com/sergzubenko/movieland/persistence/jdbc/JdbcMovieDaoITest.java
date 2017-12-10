@@ -37,7 +37,7 @@ public class JdbcMovieDaoITest {
 
     @Test
     public void getAllMovies() throws Exception {
-        List<Movie> movies = jdbcMovieDao.getMovies(null);
+        List<Movie> movies = jdbcMovieDao.getAll(null);
         checkListNotNull(movies);
     }
 

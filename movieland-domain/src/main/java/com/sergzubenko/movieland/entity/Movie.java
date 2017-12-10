@@ -22,6 +22,20 @@ public class Movie {
         return id;
     }
 
+    public Movie() {
+    }
+
+    public Movie(Movie movie){
+        this.setId(movie.getId());
+        this.setPrice(movie.getPrice());
+        this.setDescription(movie.getDescription());
+        this.setNameNative(movie.getNameNative());
+        this.setNameRussian(movie.getNameRussian());
+        this.setRating(movie.getRating());
+        this.setPicturePath(movie.getPicturePath());
+        this.setYearOfRelease(movie.getYearOfRelease());
+    }
+
     public void setId(Integer id) {
         this.id = id;
     }

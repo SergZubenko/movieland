@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +34,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public List<Movie> getAll(Map<String, String> params) {
-        return movieDao.getMovies(params);
+        return movieDao.getAll(params);
     }
 
     @Override
@@ -64,10 +63,9 @@ public class MovieServiceImpl implements MovieService {
                 movie.setPrice(0d);
             }
         }
-        List<Movie> movies = Collections.singletonList(movie);
-        reviewService.enrichMovies(movies);
-        countryService.enrichMovies(movies);
-        genreService.enrichMovies(movies);
+        reviewService.enrichMovie(movie);
+        countryService.enrichMovie(movie);
+        genreService.enrichMovie(movie);
         return movie;
     }
 
