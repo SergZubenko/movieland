@@ -3,8 +3,8 @@ package com.sergzubenko.movieland.web.controller;
 
 import com.sergzubenko.movieland.entity.Movie;
 import com.sergzubenko.movieland.entity.UserRole;
-import com.sergzubenko.movieland.service.api.MovieRatingService;
 import com.sergzubenko.movieland.service.api.MovieService;
+import com.sergzubenko.movieland.service.api.RatingService;
 import com.sergzubenko.movieland.service.api.security.UserPrincipal;
 import com.sergzubenko.movieland.web.dto.movie.MovieCompactViewDto;
 import com.sergzubenko.movieland.web.dto.movie.MoviePersistenceDto;
@@ -37,7 +37,7 @@ public class MovieController {
 
 
     @Autowired
-    private MovieRatingService ratingService;
+    private RatingService ratingService;
 
     @RequestMapping(method = RequestMethod.GET)
     public List<MovieCompactViewDto> getAllMovies(

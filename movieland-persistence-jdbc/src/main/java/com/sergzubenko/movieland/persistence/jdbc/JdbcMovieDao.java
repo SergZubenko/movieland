@@ -86,7 +86,12 @@ public class JdbcMovieDao implements MovieDao {
 
         namedParameterJdbcTemplate.update(upsertMovieSql, parameters, keyHolder);
         if (movie.getId() == null) {
-            movie.setId(keyHolder.getKey().intValue());
+            Number key;
+            if ((key = keyHolder.getKey()) != null) {
+                movie.setId(key.intValue());
+            } else {
+                throw new RuntimeException("Key was not generated for new movie");
+            }
         }
     }
 

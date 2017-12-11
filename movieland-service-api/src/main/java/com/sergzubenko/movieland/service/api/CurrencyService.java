@@ -6,5 +6,6 @@ public interface CurrencyService {
 
     void setMoviePrice(Movie movie, String currency);
 
+
 }
 

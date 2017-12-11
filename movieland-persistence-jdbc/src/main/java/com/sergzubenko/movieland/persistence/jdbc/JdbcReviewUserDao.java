@@ -76,7 +76,12 @@ public class JdbcReviewUserDao implements ReviewUserDao {
 
         jdbcTemplate.update(creator, keyHolder);
         if (review.getId() == null) {
-            review.setId(keyHolder.getKey().intValue());
+            Number key;
+            if ((key = keyHolder.getKey()) != null) {
+                review.setId(key.intValue());
+            } else {
+                throw new RuntimeException("Key was not generated for new review");
+            }
         }
     }
 

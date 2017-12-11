@@ -1,15 +1,9 @@
 package com.sergzubenko.movieland.service.api;
 
-import com.sergzubenko.movieland.entity.Movie;
 import com.sergzubenko.movieland.entity.Review;
+import com.sergzubenko.movieland.service.api.enrichment.MovieEnricher;
 
-import java.util.List;
-
-public interface ReviewService {
-
-    void enrichMovies(List<Movie> movies);
-
-    void enrichMovie(Movie movie);
+public interface ReviewService  extends MovieEnricher {
 
     void persist(Review review);
 }
