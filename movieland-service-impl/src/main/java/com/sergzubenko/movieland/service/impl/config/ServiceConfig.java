@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 
 @Configuration
-@Import(PersistenceConfig.class)
+@Import({PersistenceConfig.class, JMXConfig.class})
 @EnableScheduling
 @PropertySource({"classpath:currency.properties",
         "classpath:security.properties",

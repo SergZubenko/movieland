@@ -8,6 +8,8 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jmx.export.annotation.ManagedOperation;
+import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@ManagedResource(objectName = "com.sergzubenko.movieland.jmx:name=NBUCurrencyCache",
+        description = "NBUCurrencyCache")
 public class NBUCurrencyCache {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -55,7 +59,8 @@ public class NBUCurrencyCache {
     }
 
     @Scheduled(fixedDelayString = "${currency.updateInterval}", initialDelay = 0)
-    private void updateRates() {
+    @ManagedOperation
+    public void resetCache() {
         try {
             log.info("Updating  NBU rates");
             loadFromServer();

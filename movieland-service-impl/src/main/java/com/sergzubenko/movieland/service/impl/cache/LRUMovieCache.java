@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
+import org.springframework.jmx.export.annotation.ManagedOperation;
+import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -17,7 +19,9 @@ import java.util.concurrent.ExecutionException;
 
 @Service
 @Profile("default")
-public class LRUMovieCache implements MovieCache{
+@ManagedResource(objectName = "com.sergzubenko.movieland.jmx:name=LRUMovieCache",
+        description = "LRUMovieCache")
+public class LRUMovieCache implements MovieCache {
     private static final Logger log = LoggerFactory.getLogger(LRUMovieCache.class);
     private volatile Cache<Integer, Movie> cache;
 
@@ -44,6 +48,11 @@ public class LRUMovieCache implements MovieCache{
         cache.put(copyMovie.getId(), copyMovie);
     }
 
+    @ManagedOperation
+    public void resetCache() {
+        cache.cleanUp();
+    }
+
     @PostConstruct
     private void init() {
         log.info("Initializing LRU movie cache \n" +
@@ -53,4 +62,5 @@ public class LRUMovieCache implements MovieCache{
                 .maximumSize(maxSize)
                 .build();
     }
+
 }

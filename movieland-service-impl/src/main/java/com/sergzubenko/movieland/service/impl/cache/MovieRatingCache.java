@@ -7,6 +7,8 @@ import com.sergzubenko.movieland.persistance.api.MovieRatingDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jmx.export.annotation.ManagedOperation;
+import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 
 @Service
+@ManagedResource(objectName = "com.sergzubenko.movieland.jmx:name=MovieRatingCache",
+        description = "MovieRatingCache")
 public class MovieRatingCache {
     private static final Logger log = LoggerFactory.getLogger(MovieRatingCache.class);
 
@@ -36,6 +40,13 @@ public class MovieRatingCache {
         votesCache = new ConcurrentLinkedQueue<>();
         ratingCache = new ConcurrentHashMap<>();
         log.info("votes cache and rating cache initialized");
+    }
+
+    @ManagedOperation
+    public void resetCache() {
+        flushBuffer();
+        ratingCache = new ConcurrentHashMap<>();
+        log.warn("Buffers were cleared");
     }
 
     public void rateMovie(Integer userId, Integer movieId, double rating) {
@@ -63,6 +74,9 @@ public class MovieRatingCache {
 
     @Scheduled(fixedDelayString = "${movie.rating.flushBufferInterval}", initialDelayString = "${movie.rating.flushBufferInterval}")
     private void flushBuffer() {
+        if (votesCache.size() == 0) {
+            return;
+        }
         List<MovieUserVote> votesToSave = new ArrayList<>(votesCache.size());
         MovieUserVote vote;
         while ((vote = votesCache.remove()) != null) {
@@ -87,7 +101,7 @@ public class MovieRatingCache {
     }
 
     private MovieRating getLoadRating(Integer movieId) {
-        return ratingCache.computeIfAbsent(movieId, (id)-> movieRatingDao.getRating(id).orElse(new MovieRating()));
+        return ratingCache.computeIfAbsent(movieId, (id) -> movieRatingDao.getRating(id).orElse(new MovieRating()));
     }
 
     private void checkLoadRating(List<Integer> movieIds) {

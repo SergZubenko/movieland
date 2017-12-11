@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
+import org.springframework.jmx.export.annotation.ManagedOperation;
+import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -18,7 +20,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 @Primary
 @Profile("softRefCache")
-public class SoftRefMovieCache implements MovieCache{
+@ManagedResource(objectName = "com.sergzubenko.movieland.jmx:name=SoftRefMovieCache",
+        description = "SoftRefMovieCache")
+public class SoftRefMovieCache implements MovieCache {
     private static final Logger log = LoggerFactory.getLogger(SoftRefMovieCache.class);
     private Map<Integer, SoftReference<Movie>> cache;
 
@@ -31,7 +35,7 @@ public class SoftRefMovieCache implements MovieCache{
         Movie movie;
         SoftReference<Movie> refMovie = cache.get(id);
         if (refMovie != null && (movie = refMovie.get()) != null) {
-            return  new Movie(movie);
+            return new Movie(movie);
         }
         log.info("Movie {} not fount in cache. Retrieving from database", id);
         movie = movieDao.getMovieById(id);
@@ -46,11 +50,15 @@ public class SoftRefMovieCache implements MovieCache{
         cache.put(copyMovie.getId(), new SoftReference<>(copyMovie));
     }
 
+    @ManagedOperation
+    public void resetCache() {
+        cache.clear();
+    }
+
     @PostConstruct
     private void init() {
         log.info("Initializing SoftReference movie cache");
         cache = new ConcurrentHashMap<>();
     }
-
 
 }
